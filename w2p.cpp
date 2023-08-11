@@ -6170,40 +6170,6 @@ int objct_get_tbl_custom(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_004354C8)(tbl, str_id); // original
 }
 
-// PROC g_proc_004354FA;
-// int objct_get_tbl_campanign(void *tbl, WORD str_id)
-// {
-//     void *new_tbl = NULL;
-//     byte lvl = *(byte *)LEVEL_OBJ;
-//     //-------------------------------------------------
-//     if ((lvl == LVL_HUMAN1) || (lvl == LVL_XHUMAN1))
-//         new_tbl = tbl_task1;
-//     else if ((lvl == LVL_HUMAN2) || (lvl == LVL_XHUMAN2))
-//         new_tbl = tbl_task2;
-//     else if ((lvl == LVL_HUMAN3) || (lvl == LVL_XHUMAN3))
-//         new_tbl = tbl_task3;
-//     else if ((lvl == LVL_HUMAN4) || (lvl == LVL_XHUMAN4))
-//         new_tbl = tbl_task4;
-//     else if ((lvl == LVL_HUMAN5) || (lvl == LVL_XHUMAN5))
-//         new_tbl = tbl_task5;
-//     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
-//         new_tbl = tbl_task6;
-//     else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
-//         new_tbl = tbl_task7;
-//     else if (lvl == LVL_HUMAN10)
-//         return (int)tbl_task_secret;
-//     else if (lvl == LVL_ORC1)
-//         new_tbl = tbl_task8;
-//     str_id = 1;
-//     //-------------------------------------------------
-//     // new_tbl = tbl_obj;
-
-//     if (new_tbl)
-//         return ((int (*)(void *, int))g_proc_004354FA)(new_tbl, str_id);
-//     else
-//         return ((int (*)(void *, int))g_proc_004354FA)(tbl, str_id); // original
-// }
-
 const char FILES_PATH[] = ".\\Drogn\\";
 
 void *pud_map1;
@@ -6272,8 +6238,9 @@ void file_load_size(const char name[], void **m, DWORD *s)
     }
     *m = file;
 }
-
-void *tbl_task1; // переопределить
+void *tbl_credits;
+void *tbl_end;
+void *tbl_task1;
 void *tbl_task2;
 void *tbl_task3;
 void *tbl_task4;
@@ -6301,7 +6268,6 @@ void *tbl_brif5;
 void *tbl_brif6;
 void *tbl_brif7;
 char tbl_brif_secret[] = "%!^@#(&> !*@&$ &$)()!*# ((#*$ {}!@ #))( #|}!@# (*$&*?><!$  !>!>}!@ |}!#<#@? !@#%|#@%} !#@!<> |!@$|}|";
-void *tbl_end;
 char tbl_brif8[] = " ";
 
 // units
@@ -6343,6 +6309,95 @@ void files_init()
     grg_peon = file_load("units\\peon.grp");
     grg_pirat = file_load("units\\pirat.grp");
     grg_foot_shield = file_load("units\\foot_shield.grp");
+    // Благодарности
+    tbl_credits = file_load("textes\\credits.tbl");
+    // Брифинги
+
+    tbl_brif1 = file_load("textes\\brif1.tbl");
+    tbl_brif2 = file_load("textes\\brif2.tbl");
+    tbl_brif3 = file_load("textes\\brif3.tbl");
+    tbl_brif4 = file_load("textes\\brif4.tbl");
+    tbl_brif5 = file_load("textes\\brif5.tbl");
+    tbl_brif6 = file_load("textes\\brif6.tbl");
+    tbl_brif7 = file_load("textes\\brif7.tbl");
+    tbl_end = file_load("textes\\end.tbl");
+    // цели миссии
+    tbl_task1 = file_load("textes\\task1.tbl");
+    tbl_task2 = file_load("textes\\task2.tbl");
+    tbl_task3 = file_load("textes\\task3.tbl");
+    tbl_task4 = file_load("textes\\task4.tbl");
+    tbl_task5 = file_load("textes\\task5.tbl");
+    tbl_task6 = file_load("textes\\task6.tbl");
+    tbl_task7 = file_load("textes\\task7.tbl");
+    tbl_task8 = file_load("textes\\task8.tbl");
+}
+
+PROC g_proc_004354FA;
+int objct_get_tbl_campanign(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if ((lvl == LVL_HUMAN1) || (lvl == LVL_XHUMAN1))
+        new_tbl = tbl_task1;
+    else if ((lvl == LVL_HUMAN2) || (lvl == LVL_XHUMAN2))
+        new_tbl = tbl_task2;
+    else if ((lvl == LVL_HUMAN3) || (lvl == LVL_XHUMAN3))
+        new_tbl = tbl_task3;
+    else if ((lvl == LVL_HUMAN4) || (lvl == LVL_XHUMAN4))
+        new_tbl = tbl_task4;
+    else if ((lvl == LVL_HUMAN5) || (lvl == LVL_XHUMAN5))
+        new_tbl = tbl_task5;
+    else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
+        new_tbl = tbl_task6;
+    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+        new_tbl = tbl_task7;
+    else if (lvl == LVL_HUMAN10)
+        return (int)tbl_task_secret;
+    else if (lvl == LVL_ORC1)
+        new_tbl = tbl_task8;
+    str_id = 1;
+    //-------------------------------------------------
+    // new_tbl = tbl_obj;
+
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_004354FA)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_004354FA)(tbl, str_id); // original
+}
+
+PROC g_proc_004300A5;
+int objct_get_tbl_briefing_task(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if ((lvl == LVL_HUMAN1) || (lvl == LVL_XHUMAN1))
+        new_tbl = tbl_task1;
+    else if ((lvl == LVL_HUMAN2) || (lvl == LVL_XHUMAN2))
+        new_tbl = tbl_task2;
+    else if ((lvl == LVL_HUMAN3) || (lvl == LVL_XHUMAN3))
+        new_tbl = tbl_task3;
+    else if ((lvl == LVL_HUMAN4) || (lvl == LVL_XHUMAN4))
+        new_tbl = tbl_task4;
+    else if ((lvl == LVL_HUMAN5) || (lvl == LVL_XHUMAN5))
+        new_tbl = tbl_task5;
+    else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
+        new_tbl = tbl_task6;
+    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+        new_tbl = tbl_task7;
+    else if (lvl == LVL_HUMAN10)
+        return (int)tbl_task_secret;
+    else if (lvl == LVL_ORC1)
+        new_tbl = tbl_task8;
+    str_id = 1;
+    //-------------------------------------------------
+    // new_tbl = tbl_obj;
+
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_004300A5)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_004300A5)(tbl, str_id); // original
 }
 
 PROC g_proc_004300CA;
@@ -6378,6 +6433,73 @@ int objct_get_tbl_briefing_title(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_004300CA)(tbl, str_id); // original
 }
 
+PROC g_proc_0041F1E8;
+int finale_credits_get_tbl(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if (lvl == (LVL_XHUMAN12 + 2))
+        return (int)tbl_brif8;
+    else
+    {
+        new_tbl = tbl_credits;
+        str_id = 1;
+    }
+    //-------------------------------------------------
+
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_0041F1E8)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_0041F1E8)(tbl, str_id); // original
+}
+
+char story1[] = "RedMist\\storyteller\\1.wav";
+char story2[] = "RedMist\\storyteller\\2.wav";
+char story3[] = "RedMist\\storyteller\\3.wav";
+char story4[] = "RedMist\\storyteller\\4.wav";
+char story5[] = "RedMist\\storyteller\\5.wav";
+char story6[] = "RedMist\\storyteller\\6.wav";
+char story7[] = "RedMist\\storyteller\\7.wav";
+char story_secret[] = "RedMist\\storyteller\\secret.wav";
+char story_end[] = "RedMist\\storyteller\\end.wav";
+char story8[] = "RedMist\\storyteller\\tutorial.wav";
+
+void set_speech(char *speech, char *adr)
+{
+    patch_setdword((DWORD *)(speech + 4), (DWORD)adr);
+    patch_setdword((DWORD *)(speech + 12), 0);
+}
+
+DWORD remember_music = 101;
+DWORD remember_sound = 101;
+
+PROC g_proc_0041F027;
+int finale_get_speech(char *speech)
+{
+    remember_music = *(DWORD *)VOLUME_MUSIC;
+    remember_sound = *(DWORD *)VOLUME_SOUND;
+    if (remember_music != 0)
+        *(DWORD *)VOLUME_MUSIC = 22;
+    *(DWORD *)VOLUME_SOUND = 100;
+    ((void (*)(DWORD))F_SET_VOLUME)(SET_VOLUME_PARAM); // set volume
+
+    DWORD remember1 = *(DWORD *)(speech + 4);
+    DWORD remember2 = *(DWORD *)(speech + 12);
+
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if (lvl == (LVL_XHUMAN12 + 2))
+        set_speech(speech, story8);
+    else
+        set_speech(speech, story_end);
+    //-------------------------------------------------
+    int original = ((int (*)(char *))g_proc_0041F027)(speech); // original
+    patch_setdword((DWORD *)(speech + 4), remember1);
+    patch_setdword((DWORD *)(speech + 12), remember2);
+    return original;
+}
+
 PROC g_proc_004301CA;
 int objct_get_tbl_briefing_text(void *tbl, WORD str_id)
 {
@@ -6410,26 +6532,6 @@ int objct_get_tbl_briefing_text(void *tbl, WORD str_id)
     else
         return ((int (*)(void *, int))g_proc_004301CA)(tbl, str_id); // original
 }
-
-char story1[] = "RedMist\\storyteller\\1.wav";
-char story2[] = "RedMist\\storyteller\\2.wav";
-char story3[] = "RedMist\\storyteller\\3.wav";
-char story4[] = "RedMist\\storyteller\\4.wav";
-char story5[] = "RedMist\\storyteller\\5.wav";
-char story6[] = "RedMist\\storyteller\\6.wav";
-char story7[] = "RedMist\\storyteller\\7.wav";
-char story_secret[] = "RedMist\\storyteller\\secret.wav";
-char story_end[] = "RedMist\\storyteller\\end.wav";
-char story8[] = "RedMist\\storyteller\\tutorial.wav";
-
-void set_speech(char *speech, char *adr)
-{
-    patch_setdword((DWORD *)(speech + 4), (DWORD)adr);
-    patch_setdword((DWORD *)(speech + 12), 0);
-}
-
-DWORD remember_music = 101;
-DWORD remember_sound = 101;
 
 PROC g_proc_00430113;
 int objct_get_briefing_speech(char *speech)
@@ -6469,6 +6571,29 @@ int objct_get_briefing_speech(char *speech)
     patch_setdword((DWORD *)(speech + 4), remember1);
     patch_setdword((DWORD *)(speech + 12), remember2);
     return original;
+}
+
+bool finale_dlg = false;
+PROC g_proc_0041F0F5;
+int finale_get_tbl(void *tbl, WORD str_id)
+{
+    finale_dlg = false;
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if (lvl == (LVL_XHUMAN12 + 2))
+        return (int)tbl_brif8;
+    else
+    {
+        new_tbl = tbl_end;
+        str_id = 1;
+    }
+    //-------------------------------------------------
+
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_0041F0F5)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_0041F0F5)(tbl, str_id); // original
 }
 
 // write your custom victory functions here
@@ -7325,235 +7450,6 @@ void v_custom(bool rep_init)
         // your custom victory conditions
     }
 }
-//-------------------------------------------------------------------------------
-
-/*
-void example1(bool rep_init)
-{
-    //example function 1
-    //lose condition - all player units dead
-    //victory condition - build 6 farms and 3 barrack and 2 mills and 10 grunts AND kill blue castle
-    //additions - can build critters from farms, critter gives gold
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        sheep(true);//allow build critters
-        byte local = *(byte*)LOCAL_PLAYER;
-        find_all_alive_units(U_CRITTER);
-        sort_stat(S_OWNER, local, CMP_EQ);//only player crittes, not neutral
-        change_res(local, 0, 2, units);//argument2 = 0 - gold (1 - lumber,2-oil)
-        //add 2*number of critters gold to player
-        if (!slot_alive(local))lose(true);//lose game if player not have units
-        else
-        {
-            int farms = get_val(FARM, local);
-            int barracks = get_val(BARRACKS, local);
-            int mills = get_val(LUMBERMILL, local);
-            int grunts = get_val(GRUNT, local);
-            int enemy_castle = get_val(TH3, P_BLUE);
-            //use those values for anything you want
-            if ((farms >= 6) && (barracks >= 3) && (mills >= 2) && (grunts >= 10) && (enemy_castle == 0))win(true);
-        }
-    }
-}
-*/
-
-/*
-void example2(bool rep_init)
-{
-    //example function 2
-    //lose condition - hero must survive
-    //victory condition - bring hero to region AND kill orange knights AND kill all enemy shipyards except blue
-    //additions - peons can build portals, portals can teleport to other portals
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        b3port = true;//allow building portals
-        build3(true);//new build button for peon
-        A_portal = true;//activate teleportation
-        byte local = *(byte*)LOCAL_PLAYER;
-        find_all_alive_units(U_DANATH);
-        if (units == 0)lose(true);//no hero alive found = he probably dead - lose game
-        else//if hero alive
-        {
-            set_region(10, 10, 16, 16);
-            sort_in_region();
-            if (units != 0)//if found hero inside of region
-            {
-                int ogres = get_val(KNIGHT, P_ORANGE);
-                int shipyards = 0;
-                for (int i = 0; i < 8; i++)
-                {
-                    if ((i != local) && (i != P_BLUE))//not player himself and not blue comp
-                        shipyards += get_val(SHIPYARD, i);
-                }
-                if ((ogres == 0) && (shipyards == 0))win(true);
-            }
-        }
-    }
-}
-*/
-
-/*
-void example3(bool rep_init)
-{
-    //example function 3
-    //lose condition - at least 2 RED footmans and at least 3 YELLOW ogres must survive
-    //victory condition - kill enemy hero
-    //additions - peons can build runestones; runestones give haste and blood.
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        b3rune = true;//allow build runestone
-        build3(true);//give peon new build button
-        runes[2] = 1;//blood
-        runes[3] = 1;//haste
-        A_runestone = true;//activate runestone
-        find_all_alive_units(U_FOOTMAN);
-        sort_stat(S_COLOR, P_RED, CMP_EQ);
-        int red_footmans = units;
-        find_all_alive_units(U_OGRE);
-        sort_stat(S_COLOR, P_YELLOW, CMP_EQ);
-        int yellow_ogres = units;
-        if ((red_footmans < 2) || (yellow_ogres < 3))lose(true);//needed amount of units not survived
-        else
-        {
-            find_all_alive_units(U_GULDAN);//enemy hero
-            if (units == 0)win(true);//if no alive hero found = he dead
-        }
-    }
-}
-*/
-
-/*
-void example4(bool rep_init)
-{
-    //example function 4
-    //lose condition - heroes must survive
-    //victory condition - destroy all dark portals and runestones
-    //addition - only Hadgar can destroy portal; only Tyralyon can destroy runestone
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        ua[0] = U_HADGAR;//attacker 0
-        ut[0] = U_PORTAL;//target 0
-        ua[1] = U_TYRALYON;//attacker 1
-        ut[1] = U_RUNESTONE;//target 1
-        find_all_alive_units(U_HADGAR);
-        int hadgars = units;
-        find_all_alive_units(U_TYRALYON);
-        int tyralyons = units;
-        if ((hadgars == 0) || (tyralyons == 0))lose(true);//no hero alive found = he probably dead - lose game
-        else//if heros alive
-        {
-            int portals = get_val(PORTAL, P_NEUTRAL);
-            int runestones = get_val(RUNESTONE, P_NEUTRAL);
-            if ((portals == 0) && (runestones == 0))win(true);
-        }
-    }
-}
-*/
-
-/*
-void example5(bool rep_init)
-{
-    //example function 5
-    //lose condition - all player units dead OR red comp have more than 50000 gold
-    //victory condition - kill red
-    //addition - orc player can build hero Teron from TH on tier 2; Teron have death aura
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        heros[10] = U_TERON;//10 - slot 3 for orcs
-        m_death_aura[0] = U_TERON;
-        byte local = *(byte*)LOCAL_PLAYER;
-        if (!slot_alive(local))lose(true);//lose game if player not have units
-        else
-        {
-            int red_gold = *(int*)(GOLD + 4 * P_RED);//get red comp gold
-            if (red_gold > 50000)lose(true);
-            else
-            {
-                if (!slot_alive(P_RED))win(true);//kill red
-            }
-        }
-    }
-}
-*/
-
-/*
-void example6(bool rep_init)
-{
-    //example function 6
-    //lose condition - hero survive
-    //victory condition - kill all enemies
-    //addition - when player bring hero to some region he will receive message (and receive it ONLY 1 time)
-    //AND hero changes stats after this
-    if (rep_init)
-    {
-        //your initialize
-    }
-    else
-    {
-        byte local = *(byte*)LOCAL_PLAYER;
-
-        //EXAMPLE of save/load values
-        int byte_id = 0;//any id from 0 to 15
-        int saved_byte = *(byte*)(GB_HORSES + byte_id);//GB_HORSES is ussles massive in game
-        //BUT this massive saved to *.sav file and those 16 bytes can be used to load values between games
-
-        if (saved_byte == 1)//if hero WAS in region at least once (and this info saved betweed save/load games too)
-        {
-            //give hero new abilities
-            m_sneak[0] = U_ALLERIA;//can turn invisible now
-            def_stat(U_ALLERIA, 120, 16, 32, 1, 8, 0, 0, 0, 0);//120 hp 16-32 dmg 1 armor 8 range (some big changes)
-            find_all_alive_units(U_ALLERIA);
-            set_stat_all(S_COLOR, P_RED);//new color
-        }
-        else
-        {
-            //reset all
-            m_sneak[0] = 255;
-            def_stat(U_ALLERIA, 120, 10, 20, 0, 6, 0, 0, 0, 0);//120 hp 10-20 dmg 0 armor 6 range
-            find_all_alive_units(U_ALLERIA);
-            set_stat_all(S_COLOR, P_BLUE);//default color
-        }
-
-        find_all_alive_units(U_ALLERIA);
-        if (units == 0)lose(true);//no hero alive found = he probably dead - lose game
-        else//if hero alive
-        {
-            set_region(10, 10, 16, 16);
-            sort_in_region();
-            if (units != 0)//if found hero inside of region
-            {
-                if (saved_byte == 0)//if hero was not in region even 1 time before
-                {
-                    *(byte*)(GB_HORSES + byte_id) = 1;//set flag that hero visited region
-                    char msg[] = "Hello there!";
-                    show_message(10, msg);//show this message for 10 sec
-                }
-            }
-            if (!check_opponents(local))win(true);//if no more opponents = win
-        }
-    }
-}
-*/
 
 void (*triggers[])(bool) = {v_human1, v_orc1, v_human2, v_orc2, v_human3, v_orc3, v_human4, v_orc4, v_human5, v_orc5, v_human6, v_orc6, v_human7, v_orc7, v_human8, v_orc8, v_human9, v_orc9, v_human10, v_orc10, v_human11, v_orc11, v_human12, v_orc12, v_human13, v_orc13, v_human14, v_orc14, v_xhuman1, v_xorc1, v_xhuman2, v_xorc2, v_xhuman3, v_xorc3, v_xhuman4, v_xorc4, v_xhuman5, v_xorc5, v_xhuman6, v_xorc6, v_xhuman7, v_xorc7, v_xhuman8, v_xorc8, v_xhuman9, v_xorc9, v_xhuman10, v_xorc10, v_xhuman11, v_xorc11, v_xhuman12, v_xorc12};
 
@@ -7782,14 +7678,17 @@ void files_hooks()
     hook(0x0044A65C, &g_proc_0044A65C, (char *)status_get_tbl);    // имя в статусе около иконки
     hook(0x0044AC83, &g_proc_0044AC83, (char *)unit_hover_get_id); // id
     // hook(0x0044AE27, &g_proc_0044AE27, (char *)unit_hover_get_tbl);      // имя при наведении внизу
-    hook(0x004354C8, &g_proc_004354C8, (char *)objct_get_tbl_custom); // цель миссии в меню для одиночной миссии
-    // hook(0x004354FA, &g_proc_004354FA, (char *)objct_get_tbl_campanign); // цель миссии для компании
-    // hook(0x004300A5, &g_proc_004300A5, (char *)objct_get_tbl_briefing_task);  // цель миссии в брифинге
+    hook(0x004354C8, &g_proc_004354C8, (char *)objct_get_tbl_custom);         // цель миссии в меню для одиночной миссии
+    hook(0x004354FA, &g_proc_004354FA, (char *)objct_get_tbl_campanign);      // цель миссии для компании
+    hook(0x004300A5, &g_proc_004300A5, (char *)objct_get_tbl_briefing_task);  // цель миссии в брифинге
     hook(0x004300CA, &g_proc_004300CA, (char *)objct_get_tbl_briefing_title); // название миссии в брифинге
     hook(0x004301CA, &g_proc_004301CA, (char *)objct_get_tbl_briefing_text);  // текст брифинга
     hook(0x00430113, &g_proc_00430113, (char *)objct_get_briefing_speech);    // звук брифинга
     hook(0x0041F97D, &g_proc_0041F97D, (char *)map_file_load);
-    hook(0x00454BCA, &g_proc_00454BCA, (char *)grp_draw_unit); // замена моделек юнитов
+    hook(0x00454BCA, &g_proc_00454BCA, (char *)grp_draw_unit);          // замена моделек юнитов
+    hook(0x0041F1E8, &g_proc_0041F1E8, (char *)finale_credits_get_tbl); // Вводная
+    hook(0x0041F027, &g_proc_0041F027, (char *)finale_get_speech);      // Финалочка вроде как
+    hook(0x0041F0F5, &g_proc_0041F0F5, (char *)finale_get_tbl);
 }
 
 void common_hooks()
