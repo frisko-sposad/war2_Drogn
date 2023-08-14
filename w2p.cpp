@@ -57,6 +57,60 @@ byte m_prvnt[255] = {255};      // units that have prevent loss
 
 byte all_kills[16 * 16 * U_OWALL] = {0};
 
+void *tbl_credits;
+void *tbl_end;
+void *tbl_task1;
+void *tbl_task2;
+void *tbl_task3;
+void *tbl_task4;
+void *tbl_task5;
+void *tbl_task6;
+void *tbl_task7;
+char tbl_task_secret[] = "Kill 5000 orcs!";
+void *tbl_task8;
+
+void *tbl_title1;
+void *tbl_title2;
+void *tbl_title3;
+void *tbl_title4;
+void *tbl_title5;
+void *tbl_title6;
+void *tbl_title7;
+void *tbl_title8;
+void *tbl_title9;
+
+void *tbl_name1;
+void *tbl_name2;
+void *tbl_name3;
+void *tbl_name4;
+void *tbl_name5;
+void *tbl_name6;
+void *tbl_name7;
+void *tbl_name8;
+void *tbl_name9;
+void *tbl_name10;
+void *tbl_name11;
+
+void *tbl_brif1;
+void *tbl_brif2;
+void *tbl_brif3;
+void *tbl_brif4;
+void *tbl_brif5;
+void *tbl_brif6;
+void *tbl_brif7;
+char tbl_brif_secret[] = "%!^@#(&> !*@&$ &$)()!*# ((#*$ {}!@ #))( #|}!@# (*$&*?><!$  !>!>}!@ |}!#<#@? !@#%|#@%} !#@!<> |!@$|}|";
+char tbl_brif8[] = " ";
+
+// название наций при победе или поражении
+void *tbl_nations;
+
+// units
+void *grg_peon;
+void *grg_pirat;
+void *grg_old_lothar;
+void *grg_castellan;
+void *grg_foot_shield;
+
 struct Vizs
 {
     byte x = 0;
@@ -6030,8 +6084,6 @@ void sounds_tables()
     sounds_ready_table_set(U_GULDAN, 88);
 }
 
-char name_Hiu[] = "Hiu";
-
 PROC g_proc_0044A65C;
 int status_get_tbl(void *tbl, WORD str_id)
 
@@ -6046,8 +6098,23 @@ int status_get_tbl(void *tbl, WORD str_id)
             byte id = *((byte *)((uintptr_t)u + S_ID));
             if (id == U_PEON)
             {
-                if (*(byte *)LEVEL_OBJ == LVL_HUMAN1)
-                    return (int)name_Hiu;
+                new_tbl = tbl_name1;
+                str_id = 1;
+            }
+            else if (id == U_UTER)
+            {
+                new_tbl = tbl_name2;
+                str_id = 1;
+            }
+            else if (id == U_LOTHAR)
+            {
+                new_tbl = tbl_name3;
+                str_id = 1;
+            }
+            else if (id == U_GRUNT)
+            {
+                new_tbl = tbl_name4;
+                str_id = 1;
             }
         }
     }
@@ -6074,84 +6141,42 @@ void unit_hover_get_id(int a, int *b)
     ((void (*)(int, int *))g_proc_0044AC83)(a, b); // original
 }
 
-// PROC g_proc_0044AE27;
-// int unit_hover_get_tbl(void *tbl, WORD str_id)
-// {
-//     void *new_tbl = NULL;
-//     //-------------------------------------------------
-//     int *u = hover_unit;
-//     if (u != NULL)
-//     {
-//         byte id = *((byte *)((uintptr_t)u + S_ID));
-//         if (id == U_KARGATH)
-//         {
-//             if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-//                 new_tbl = tbl_name1;
-//             else
-//                 new_tbl = tbl_name9;
-//             str_id = 1;
-//         }
-//         else if (id == U_GROM)
-//         {
-//             new_tbl = tbl_name8;
-//             str_id = 1;
-//         }
-//         else if (id == U_TERON)
-//         {
-//             new_tbl = tbl_name8;
-//             str_id = 1;
-//         }
-//         else if (id == U_CHOGAL)
-//         {
-//             new_tbl = tbl_name10;
-//             str_id = 1;
-//         }
-//         else if (id == U_HLUMBER)
-//         {
-//             new_tbl = tbl_name11;
-//             str_id = 1;
-//         }
-//         else if (id == U_DANATH)
-//         {
-//             new_tbl = tbl_name2;
-//             str_id = 1;
-//         }
-//         else if (id == U_ARCHER)
-//         {
-//             new_tbl = tbl_name3;
-//             str_id = 1;
-//         }
-//         else if (id == U_HDESTROYER)
-//         {
-//             new_tbl = tbl_name4;
-//             str_id = 1;
-//         }
-//         else if (id == U_GRIFON)
-//         {
-//             new_tbl = tbl_name6;
-//             str_id = 1;
-//         }
-//         else if (id == U_AVIARY)
-//         {
-//             if (*(byte *)LEVEL_OBJ == LVL_ORC1)
-//                 new_tbl = tbl_name5;
-//             else
-//             {
-//                 byte o = *((byte *)((uintptr_t)u + S_OWNER));
-//                 if (o == *(byte *)LOCAL_PLAYER)
-//                     new_tbl = tbl_name5;
-//                 else
-//                     new_tbl = tbl_name7;
-//             }
-//             str_id = 1;
-//         }
-//     }
-//     //-------------------------------------------------
-//     if (new_tbl)
-//         return ((int (*)(void *, int))g_proc_0044AE27)(new_tbl, str_id);
-//     else
-//         return ((int (*)(void *, int))g_proc_0044AE27)(tbl, str_id); // original
-// }
+PROC g_proc_0044AE27;
+int unit_hover_get_tbl(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    //-------------------------------------------------
+    int *u = hover_unit;
+    if (u != NULL)
+    {
+        byte id = *((byte *)((uintptr_t)u + S_ID));
+        if (id == U_PEON)
+        {
+            new_tbl = tbl_name1;
+            str_id = 1;
+        }
+        else if (id == U_UTER)
+        {
+            new_tbl = tbl_name2;
+            str_id = 1;
+        }
+        else if (id == U_LOTHAR)
+        {
+            new_tbl = tbl_name3;
+            str_id = 1;
+        }
+        else if (id == U_GRUNT)
+        {
+            new_tbl = tbl_name4;
+            str_id = 1;
+        }
+    }
+    //-------------------------------------------------
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_0044AE27)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_0044AE27)(tbl, str_id); // original
+}
 
 char tbl_kill[] = "Kill all";
 
@@ -6238,42 +6263,6 @@ void file_load_size(const char name[], void **m, DWORD *s)
     }
     *m = file;
 }
-void *tbl_credits;
-void *tbl_end;
-void *tbl_task1;
-void *tbl_task2;
-void *tbl_task3;
-void *tbl_task4;
-void *tbl_task5;
-void *tbl_task6;
-void *tbl_task7;
-char tbl_task_secret[] = "Kill 5000 orcs!";
-void *tbl_task8;
-
-void *tbl_title1;
-void *tbl_title2;
-void *tbl_title3;
-void *tbl_title4;
-void *tbl_title5;
-void *tbl_title6;
-void *tbl_title7;
-void *tbl_title8;
-void *tbl_title9;
-
-void *tbl_brif1;
-void *tbl_brif2;
-void *tbl_brif3;
-void *tbl_brif4;
-void *tbl_brif5;
-void *tbl_brif6;
-void *tbl_brif7;
-char tbl_brif_secret[] = "%!^@#(&> !*@&$ &$)()!*# ((#*$ {}!@ #))( #|}!@# (*$&*?><!$  !>!>}!@ |}!#<#@? !@#%|#@%} !#@!<> |!@$|}|";
-char tbl_brif8[] = " ";
-
-// units
-void *grg_peon;
-void *grg_pirat;
-void *grg_foot_shield;
 
 PROC g_proc_00454BCA;
 int grp_draw_unit(int a, int *u, void *grp, int frame)
@@ -6296,6 +6285,16 @@ int grp_draw_unit(int a, int *u, void *grp, int frame)
         if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
             new_grp = grg_pirat;
     }
+    else if (id == U_LOTHAR)
+    {
+        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+            new_grp = grg_old_lothar;
+    }
+    else if (id == U_UTER)
+    {
+        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+            new_grp = grg_castellan;
+    }
 
     if (new_grp)
         return ((int (*)(int, int *, void *, int))g_proc_00454BCA)(a, u, new_grp, frame);
@@ -6303,11 +6302,76 @@ int grp_draw_unit(int a, int *u, void *grp, int frame)
         return ((int (*)(int, int *, void *, int))g_proc_00454BCA)(a, u, grp, frame); // original
 }
 
+PROC g_proc_0041C51C;
+int netstat_get_tbl_nation(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    // 46 blue hum
+    // 47 blue orc
+    // 48 white hum
+    // 49 white orc
+    // 50 red hum
+    // 51 red orc
+    // 52 green hum
+    // 53 green orc
+    // 54 black hum
+    // 55 black orc
+    // 56 violet hum
+    // 57 violet orc
+    // 58 orange hum
+    // 59 orange orc
+    // 60 yellow hum
+    // 61 yellow orc
+    // 92 blue xorc
+    // 93 white xorc
+    // 94 red xorc
+    // 95 green xorc
+    // 96 black xorc
+    // 97 violet xorc
+    // 98 orange xorc
+    // 99 yellow xorc
+    //-------------------------------------------------
+    if (str_id == 48 || str_id == 49)
+    {
+        new_tbl = tbl_nations;
+        str_id = 1;
+    }
+    else if (str_id == 58 || str_id == 59)
+    {
+        new_tbl = tbl_nations;
+        str_id = 2;
+    }
+    else if (str_id == 46 || str_id == 47)
+    {
+        new_tbl = tbl_nations;
+        str_id = 3;
+    }
+    else if (str_id == 54 || str_id == 55 || str_id == 56 || str_id == 57)
+    {
+        new_tbl = tbl_nations;
+        str_id = 4;
+    }
+    // else if (str_id == 46 || str_id == 47) настроить нежить
+    // {
+    //     new_tbl = tbl_nations;
+    //     str_id = 5;
+    // }
+
+    //-------------------------------------------------
+
+    if (new_tbl)
+        return ((int (*)(void *, int))g_proc_0041C51C)(new_tbl, str_id);
+    else
+        return ((int (*)(void *, int))g_proc_0041C51C)(tbl, str_id); // original
+}
+
 void files_init()
 {
     file_load_size("maps\\dr01.pud", &pud_map1, &pud_map1_size);
     grg_peon = file_load("units\\peon.grp");
     grg_pirat = file_load("units\\pirat.grp");
+    grg_old_lothar = file_load("units\\old_lothar.grp");
+    grg_castellan = file_load("units\\castellan.grp");
     grg_foot_shield = file_load("units\\foot_shield.grp");
     // Благодарности
     tbl_credits = file_load("textes\\credits.tbl");
@@ -6330,6 +6394,33 @@ void files_init()
     tbl_task6 = file_load("textes\\task6.tbl");
     tbl_task7 = file_load("textes\\task7.tbl");
     tbl_task8 = file_load("textes\\task8.tbl");
+
+    // заголовки Брифинга
+    tbl_title1 = file_load("textes\\title1.tbl");
+    tbl_title2 = file_load("textes\\title2.tbl");
+    tbl_title3 = file_load("textes\\title3.tbl");
+    tbl_title4 = file_load("textes\\title4.tbl");
+    tbl_title5 = file_load("textes\\title5.tbl");
+    tbl_title6 = file_load("textes\\title6.tbl");
+    tbl_title7 = file_load("textes\\title7.tbl");
+    tbl_title8 = file_load("textes\\title8.tbl");
+    tbl_title9 = file_load("textes\\title9.tbl");
+
+    // Имена юнитов
+    tbl_name1 = file_load("textes\\name1.tbl");
+    tbl_name2 = file_load("textes\\name2.tbl");
+    tbl_name3 = file_load("textes\\name3.tbl");
+    tbl_name4 = file_load("textes\\name4.tbl");
+    tbl_name5 = file_load("textes\\name5.tbl");
+    tbl_name6 = file_load("textes\\name6.tbl");
+    tbl_name7 = file_load("textes\\name7.tbl");
+    tbl_name8 = file_load("textes\\name8.tbl");
+    tbl_name9 = file_load("textes\\name9.tbl");
+    tbl_name10 = file_load("textes\\name10.tbl");
+    tbl_name11 = file_load("textes\\name11.tbl");
+
+    // нации при победе или поражении
+    tbl_nations = file_load("textes\\nations.tbl");
 }
 
 PROC g_proc_004354FA;
@@ -6598,7 +6689,7 @@ int finale_get_tbl(void *tbl, WORD str_id)
 
 // write your custom victory functions here
 //-------------------------------------------------------------------------------
-void v_human1(bool rep_init)
+void v_human1(bool rep_init) // Первая миссия
 {
     if (rep_init)
     {
@@ -6608,15 +6699,6 @@ void v_human1(bool rep_init)
     else
     {
 
-        // Брифинг название "Опять работа"
-        // Текст брифинга: "Южные берега королевства Алаунтэр долгие годы терпят нападения Дрогнийских пиратов.
-        // Заручившись поддержкой одного из островных привителей - Барона Дерила,
-        // Король приказал построить форт для борьбы с пиратством в этих водах.
-        // Хью - один из местных жителей, спешит на заработки в форт.
-        // Цель миссии: построить казарму в форте."
-        //
-        // Разрешить строить здания без ТХ, разрешить строить только барак.
-        // Изменить цену и время постройки барака.
         // Имя для Пеона - Хью, Лотар - Барон, Утер - Кастелян
         // Узнать как менять цель миссии в течении игры и задать стартовую цель миссии.
 
@@ -6625,10 +6707,10 @@ void v_human1(bool rep_init)
         ally(P_BLACK, P_ORANGE, 0);
 
         // Союзники
+        ally(P_RED, P_ORANGE, 1);
         ally(P_WHITE, P_ORANGE, 1);
         ally(P_WHITE, P_BLUE, 1);
-        ally(P_WHITE, P_BLUE, 1);
-        ally(P_WHITE, P_BLUE, 1);
+        ally(P_WHITE, P_RED, 1);
 
         // обзор
         viz(P_WHITE, P_BLUE, 1);
@@ -6643,7 +6725,7 @@ void v_human1(bool rep_init)
         sort_stat(S_OWNER, P_BLUE, CMP_EQ);
         order_all(26, 56, ORDER_MOVE);
 
-        // орковский рабочий превращается в ГГ
+        // орковский рабочий превращается в ГГ - Это уже не работает
         find_all_alive_units(U_PEON);
         sort_stat(S_COLOR, P_RED, CMP_EQ);
         set_stat_all(S_COLOR, P_WHITE); // перекрашиваем юнитов в списке в белых - эта ебала чтоб не переделывать всех орков и постройки в людские
@@ -6723,11 +6805,31 @@ void v_human1(bool rep_init)
 
         if (units > 0)
         {
-            char mess[] = "Baron: Many of my people have died, swim to the King for help!"; // "Барон: Многие мои люди погибли, плыви к Королю за подмогой!"
-            show_message(5, mess);
-            viz_area_add(59, 75, 1 << P_WHITE, 5); // открыть карту для белого размером в 7 клеток
+            if (*(byte *)(GB_HORSES + 10) == 0) // таймер 1 раз
+            {
 
-            // изменить цель миссии - сесть на корабль и отплыть за помощью
+                char mess[] = "Baron: Many of my people have died, swim to the King for help!"; // "Барон: Многие мои люди погибли, плыви к Королю за подмогой!"
+                show_message(5, mess);
+                viz_area_add(59, 75, 1 << P_WHITE, 5); // открыть карту для белого размером в 7 клеток
+                *(byte *)(GB_HORSES + 10) = 1;         // таймер 1 раз
+
+                // изменить цель миссии - сесть на корабль и отплыть за помощью
+            }
+        }
+
+        // дорога в порт - красим красных грунтов в черных
+        find_all_alive_units(U_GRUNT);
+        sort_stat(S_COLOR, P_RED, CMP_EQ);
+        set_stat_all(S_COLOR, P_BLACK);
+
+        set_region(70, 55, 94, 64); // установить регион
+        find_all_alive_units(U_PEON);
+        sort_in_region();
+
+        if (units > 0)
+        {
+            find_all_alive_units(U_GRUNT);
+            give_all(P_BLACK);
         }
 
         // герой прибыл в порт
@@ -6784,8 +6886,8 @@ void v_human1(bool rep_init)
         }
 
         find_all_alive_units(U_UTER);
-        sort_stat(S_HP, 45, CMP_SMALLER_EQ);
-        remove_all(); // удалить утера если у него меньше 45 хп
+        sort_stat(S_HP, 60, CMP_SMALLER_EQ);
+        remove_all(); // удалить утера если у него меньше 60 хп
 
         // Союзы:
         // - черный и белый враги
@@ -6816,14 +6918,6 @@ void v_human2(bool rep_init)
     }
     else
     {
-        // добавить
-        // Брифинг название "Побег"
-        // Брфинг id 2
-        // У Хью не получилось предупредить Лорда Тейна,
-        // судно атаковали пираты и наш герой попал в темницу.
-        // Цель миссии: сбежать из темницы и выбраться с острова.
-        // Хью и кое-кто ещё должны выжить.
-        //
         //  your custom victory conditions
     }
 }
@@ -6836,15 +6930,6 @@ void v_human3(bool rep_init)
     }
     else
     {
-
-        // добавить
-        // Брифинг название ""
-        // Брфинг id 3
-        // Освободившись из темницы, Хью вернулся на остров.
-        // В это время, Барон начал готовился к новому нападению пиратов.
-        // Послание Лорду Тейну дошло с опозданием, поэтому нужно помочь Барону в защите города.
-        // Цель миссии: Отражать нападения пиратов до прибытия помощи от Лорда Тейна.
-        //
         //  your custom victory conditions
     }
 }
@@ -7675,9 +7760,9 @@ void hook(int adr, PROC *p, char *func)
 void files_hooks()
 {
     files_init();
-    hook(0x0044A65C, &g_proc_0044A65C, (char *)status_get_tbl);    // имя в статусе около иконки
-    hook(0x0044AC83, &g_proc_0044AC83, (char *)unit_hover_get_id); // id
-    // hook(0x0044AE27, &g_proc_0044AE27, (char *)unit_hover_get_tbl);      // имя при наведении внизу
+    hook(0x0044A65C, &g_proc_0044A65C, (char *)status_get_tbl);               // имя в статусе около иконки
+    hook(0x0044AC83, &g_proc_0044AC83, (char *)unit_hover_get_id);            // id
+    hook(0x0044AE27, &g_proc_0044AE27, (char *)unit_hover_get_tbl);           // имя при наведении внизу
     hook(0x004354C8, &g_proc_004354C8, (char *)objct_get_tbl_custom);         // цель миссии в меню для одиночной миссии
     hook(0x004354FA, &g_proc_004354FA, (char *)objct_get_tbl_campanign);      // цель миссии для компании
     hook(0x004300A5, &g_proc_004300A5, (char *)objct_get_tbl_briefing_task);  // цель миссии в брифинге
@@ -7689,6 +7774,7 @@ void files_hooks()
     hook(0x0041F1E8, &g_proc_0041F1E8, (char *)finale_credits_get_tbl); // Вводная
     hook(0x0041F027, &g_proc_0041F027, (char *)finale_get_speech);      // Финалочка вроде как
     hook(0x0041F0F5, &g_proc_0041F0F5, (char *)finale_get_tbl);
+    hook(0x0041C51C, &g_proc_0041C51C, (char *)netstat_get_tbl_nation); // нации при победе или поражении
 }
 
 void common_hooks()
