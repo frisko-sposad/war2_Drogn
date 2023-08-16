@@ -111,6 +111,9 @@ void *grg_old_lothar;
 void *grg_castellan;
 void *grg_foot_shield;
 
+// icons
+void *grp_drogn_icons;
+
 struct Vizs
 {
     byte x = 0;
@@ -6346,7 +6349,7 @@ int netstat_get_tbl_nation(void *tbl, WORD str_id)
         new_tbl = tbl_nations;
         str_id = 3;
     }
-    else if (str_id == 54 || str_id == 55 || str_id == 56 || str_id == 57)
+    else if (str_id == 50 || str_id == 51 || str_id == 54 || str_id == 55 || str_id == 56 || str_id == 57)
     {
         new_tbl = tbl_nations;
         str_id = 4;
@@ -6373,6 +6376,8 @@ void files_init()
     grg_old_lothar = file_load("units\\old_lothar.grp");
     grg_castellan = file_load("units\\castellan.grp");
     grg_foot_shield = file_load("units\\foot_shield.grp");
+    // иконки
+    grp_drogn_icons = file_load("icons\\drogn_icons.grp");
     // Благодарности
     tbl_credits = file_load("textes\\credits.tbl");
     // Брифинги
@@ -6715,6 +6720,16 @@ void v_human1(bool rep_init) // Первая миссия
         // обзор
         viz(P_WHITE, P_BLUE, 1);
 
+        // пираты стоят на берегу чтоб герой не просочился по берегу
+        set_region(37, 66, 43, 73);
+        find_all_alive_units(U_GRUNT);
+        sort_in_region();
+        order_all(38, 68, ORDER_STAND);
+
+        // превращаем орков в людей
+        unit_convert(P_BLACK, U_ODESTROYER, U_HDESTROYER, 1);
+        unit_convert(P_BLACK, U_OTRANSPORT, U_HTRANSPORT, 1);
+
         // создаём ГГ
         find_all_alive_units(U_PEASANT);
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
@@ -6734,7 +6749,7 @@ void v_human1(bool rep_init) // Первая миссия
         // проверка что есть барак в форте
         find_all_alive_units(U_OBARRACK);
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
-        if (units > 0)
+        if (units > 0 && *(byte *)(GB_HORSES + 0) == 0)
         {
 
             if (*(byte *)(GB_HORSES + 14) == 0) // таймер 1 раз
@@ -6757,14 +6772,24 @@ void v_human1(bool rep_init) // Первая миссия
                     unit_create(21, 64, U_GRUNT, P_BLACK, 4);
                     unit_create(20, 48, U_GRUNT, P_BLACK, 4);
                     *(byte *)(GB_HORSES + 14) = 1; // таймер 1 раз
+                    *(byte *)(GB_HORSES + 0) = 1;  // чекпоинт 1
                 }
             }
         }
 
-        // проверка на наличие башни у игрока
-        find_all_alive_units(U_HTOWER);
-        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
-        if (units > 0)
+        // герой подошел к башне
+        set_region(61, 39, 63, 40); // установить регион
+        find_all_alive_units(U_PEON);
+        sort_in_region();
+        if (units > 0 && *(byte *)(GB_HORSES + 0) == 1)
+        {
+            // передача башни игроку
+            find_all_alive_units(U_HTOWER);
+            give_all(P_WHITE);
+            *(byte *)(GB_HORSES + 0) = 2; // чекпоинт 2
+        }
+
+        if (*(byte *)(GB_HORSES + 0) == 2)
         {
 
             if (*(byte *)(GB_HORSES + 12) == 0) // таймер 1 раз
@@ -6786,6 +6811,7 @@ void v_human1(bool rep_init) // Первая миссия
                     // изменить цель миссии
 
                     *(byte *)(GB_HORSES + 12) = 1; // таймер 1 раз
+                    *(byte *)(GB_HORSES + 0) = 3;  // чекпоинт 2
                 }
             }
         }
@@ -6803,7 +6829,7 @@ void v_human1(bool rep_init) // Первая миссия
         find_all_alive_units(U_PEON);
         sort_in_region();
 
-        if (units > 0)
+        if (units > 0 && *(byte *)(GB_HORSES + 0) == 3)
         {
             if (*(byte *)(GB_HORSES + 10) == 0) // таймер 1 раз
             {
@@ -6812,6 +6838,7 @@ void v_human1(bool rep_init) // Первая миссия
                 show_message(5, mess);
                 viz_area_add(59, 75, 1 << P_WHITE, 5); // открыть карту для белого размером в 7 клеток
                 *(byte *)(GB_HORSES + 10) = 1;         // таймер 1 раз
+                *(byte *)(GB_HORSES + 0) = 4;          // чекпоинт 3
 
                 // изменить цель миссии - сесть на корабль и отплыть за помощью
             }
@@ -6819,10 +6846,9 @@ void v_human1(bool rep_init) // Первая миссия
 
         // дорога в порт - красим красных грунтов в черных
         find_all_alive_units(U_GRUNT);
-        sort_stat(S_COLOR, P_RED, CMP_EQ);
         set_stat_all(S_COLOR, P_BLACK);
 
-        set_region(70, 55, 94, 64); // установить регион
+        set_region(70, 55, 95, 70); // установить регион
         find_all_alive_units(U_PEON);
         sort_in_region();
 
@@ -6838,7 +6864,7 @@ void v_human1(bool rep_init) // Первая миссия
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
         sort_in_region();
 
-        if (units > 0)
+        if (units > 0 && *(byte *)(GB_HORSES + 0) == 4)
         {
             // передать корабль игроку
             find_all_alive_units(U_BATTLESHIP);
@@ -7757,6 +7783,38 @@ void hook(int adr, PROC *p, char *func)
     *p = patch_call((char *)adr, func);
 }
 
+int *portrait_unit;
+PROC g_proc_004453A7; // draw unit portrait
+void grp_draw_portrait(void *grp, byte frame, int b, int c)
+{
+    bool f = true;
+    void *new_grp = NULL;
+    //-------------------------------------------------
+    int *u = portrait_unit;
+    if (u != NULL)
+    {
+        byte id = *((byte *)((uintptr_t)u + S_ID));
+    }
+
+    if (f)
+    {
+        byte era = *(byte *)MAP_ERA;
+        if (era == 0)
+            new_grp = grp_drogn_icons;
+        else if (era == 1)
+            new_grp = grp_drogn_icons;
+        else if (era == 2)
+            new_grp = grp_drogn_icons;
+        else if (era == 3)
+            new_grp = grp_drogn_icons;
+    }
+
+    if (new_grp)
+        return ((void (*)(void *, byte, int, int))g_proc_004453A7)(new_grp, frame, b, c);
+    else
+        return ((void (*)(void *, byte, int, int))g_proc_004453A7)(grp, frame, b, c); // original
+}
+
 void files_hooks()
 {
     files_init();
@@ -7775,6 +7833,7 @@ void files_hooks()
     hook(0x0041F027, &g_proc_0041F027, (char *)finale_get_speech);      // Финалочка вроде как
     hook(0x0041F0F5, &g_proc_0041F0F5, (char *)finale_get_tbl);
     hook(0x0041C51C, &g_proc_0041C51C, (char *)netstat_get_tbl_nation); // нации при победе или поражении
+    hook(0x004453A7, &g_proc_004453A7, (char *)grp_draw_portrait);      // icons
 }
 
 void common_hooks()
