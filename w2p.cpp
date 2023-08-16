@@ -7767,6 +7767,7 @@ void new_game(int a, int b, long c)
             a_custom = 1; // fix for when saved game loads custom get broken
     }
     replace_trigger();
+    memset((void *)GB_HORSES, 0, 16 * sizeof(byte));
     ((void (*)(int, int, long))g_proc_0042A4A1)(a, b, c); // original
 }
 
