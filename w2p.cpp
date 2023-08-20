@@ -105,7 +105,8 @@ char tbl_brif8[] = " ";
 void *tbl_nations;
 
 // units
-void *grg_peon;
+void *grg_hugh;
+void *grg_hugh_icon;
 void *grg_pirat;
 void *grg_old_lothar;
 void *grg_castellan;
@@ -113,6 +114,34 @@ void *grg_foot_shield;
 
 // icons
 void *grp_drogn_icons;
+
+// sound
+void *def_name = NULL;
+void *def_sound = NULL;
+void *def_name_seq = NULL;
+void *def_sound_seq = NULL;
+
+char hugh1_name[] = "Drogn\\speech\\hugh\\hughpisd1.wav\x0";
+void *hugh1_sound = NULL;
+char hugh2_name[] = "Drogn\\speech\\hugh\\hughpisd2.wav\x0";
+void *hugh2_sound = NULL;
+char hugh3_name[] = "Drogn\\speech\\hugh\\hughpisd3.wav\x0";
+void *hugh3_sound = NULL;
+char hugh4_name[] = "Drogn\\speech\\hugh\\hughwhat1.wav\x0";
+void *hugh4_sound = NULL;
+char hugh5_name[] = "Drogn\\speech\\hugh\\hughwhat2.wav\x0";
+void *hugh5_sound = NULL;
+char hugh6_name[] = "Drogn\\speech\\hugh\\hughwhat3.wav\x0";
+void *hugh6_sound = NULL;
+char hugh7_name[] = "Drogn\\speech\\hugh\\hughyessr1.wav\x0";
+void *hugh7_sound = NULL;
+char hugh8_name[] = "Drogn\\speech\\hugh\\hughyessr2.wav\x0";
+void *hugh8_sound = NULL;
+char hugh9_name[] = "Drogn\\speech\\hugh\\hughyessr3.wav\x0";
+void *hugh9_sound = NULL;
+char *hugh_names[] = {hugh1_name, hugh2_name, hugh3_name, hugh4_name, hugh5_name, hugh6_name, hugh7_name, hugh8_name, hugh9_name};
+void *hugh_sounds[] = {hugh1_sound, hugh2_sound, hugh3_sound, hugh4_sound, hugh5_sound, hugh6_sound, hugh7_sound, hugh8_sound, hugh9_sound};
+bool w_sounds_e = true;
 
 struct Vizs
 {
@@ -6099,7 +6128,15 @@ int status_get_tbl(void *tbl, WORD str_id)
         if (str_id < U_EMPTY_BUTTONS)
         {
             byte id = *((byte *)((uintptr_t)u + S_ID));
-            if (id == U_PEON)
+            if (id == U_PEASANT)
+            {
+                if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_HUMAN2))
+                {
+                    new_tbl = tbl_name1;
+                    str_id = 1;
+                }
+            }
+            else if (id == U_DANATH)
             {
                 new_tbl = tbl_name1;
                 str_id = 1;
@@ -6117,6 +6154,21 @@ int status_get_tbl(void *tbl, WORD str_id)
             else if (id == U_GRUNT)
             {
                 new_tbl = tbl_name4;
+                str_id = 1;
+            }
+            else if (id == U_RANGER)
+            {
+                new_tbl = tbl_name5;
+                str_id = 1;
+            }
+            else if (id == U_OGRE)
+            {
+                new_tbl = tbl_name6;
+                str_id = 1;
+            }
+            else if (id == U_DENTARG)
+            {
+                new_tbl = tbl_name7;
                 str_id = 1;
             }
         }
@@ -6202,6 +6254,34 @@ const char FILES_PATH[] = ".\\Drogn\\";
 
 void *pud_map1;
 DWORD pud_map1_size;
+void *pud_map2;
+DWORD pud_map2_size;
+void *pud_map3;
+DWORD pud_map3_size;
+void *pud_map4;
+DWORD pud_map4_size;
+void *pud_map5;
+DWORD pud_map5_size;
+void *pud_map6;
+DWORD pud_map6_size;
+void *pud_map7;
+DWORD pud_map7_size;
+void *pud_map_secret;
+DWORD pud_map_secret_size;
+void *pud_emap1;
+DWORD pud_emap1_size;
+void *pud_emap2;
+DWORD pud_emap2_size;
+void *pud_emap3;
+DWORD pud_emap3_size;
+void *pud_emap4;
+DWORD pud_emap4_size;
+void *pud_emap5;
+DWORD pud_emap5_size;
+void *pud_emap6;
+DWORD pud_emap6_size;
+void *pud_emap7;
+DWORD pud_emap7_size;
 
 PROC g_proc_0041F97D;
 int map_file_load(int a, int b, void **map, DWORD *size)
@@ -6221,6 +6301,12 @@ int map_file_load(int a, int b, void **map, DWORD *size)
         {
             *map = pud_map1;
             *size = pud_map1_size;
+            f = true;
+        }
+        else if (lvl == LVL_HUMAN2)
+        {
+            *map = pud_map2;
+            *size = pud_map2_size;
             f = true;
         }
     }
@@ -6273,30 +6359,30 @@ int grp_draw_unit(int a, int *u, void *grp, int frame)
     void *new_grp = NULL;
     //-------------------------------------------------
     byte id = *((byte *)((uintptr_t)u + S_ID));
-    if (id == U_PEON)
+    if (id == U_PEASANT)
     {
-        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-            new_grp = grg_peon;
+        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_HUMAN2))
+            new_grp = grg_hugh;
     }
     else if (id == U_FOOTMAN)
     {
-        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-            new_grp = grg_foot_shield;
+        // if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+        new_grp = grg_foot_shield;
     }
     else if (id == U_GRUNT)
     {
-        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-            new_grp = grg_pirat;
+        // if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+        new_grp = grg_pirat;
     }
     else if (id == U_LOTHAR)
     {
-        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-            new_grp = grg_old_lothar;
+        // if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+        new_grp = grg_old_lothar;
     }
     else if (id == U_UTER)
     {
-        if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
-            new_grp = grg_castellan;
+        // if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_XHUMAN1))
+        new_grp = grg_castellan;
     }
 
     if (new_grp)
@@ -6371,7 +6457,9 @@ int netstat_get_tbl_nation(void *tbl, WORD str_id)
 void files_init()
 {
     file_load_size("maps\\dr01.pud", &pud_map1, &pud_map1_size);
-    grg_peon = file_load("units\\peon.grp");
+    file_load_size("maps\\dr02.pud", &pud_map2, &pud_map2_size);
+    grg_hugh = file_load("units\\hugh.grp");
+    grg_hugh_icon = file_load("icons\\hugh_icon.grp");
     grg_pirat = file_load("units\\pirat.grp");
     grg_old_lothar = file_load("units\\old_lothar.grp");
     grg_castellan = file_load("units\\castellan.grp");
@@ -6692,6 +6780,76 @@ int finale_get_tbl(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_0041F0F5)(tbl, str_id); // original
 }
 
+PROC g_proc_00422D76;
+void sound_play_unit_speech_replace(WORD sid, int a, int *u, int b, void *snd, char *name)
+{
+    def_name = (void *)*(int *)(SOUNDS_FILES_LIST + 8 + 24 * sid);
+    def_sound = (void *)*(int *)(SOUNDS_FILES_LIST + 16 + 24 * sid); // save default
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 8 + 24 * sid), (DWORD)name);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 16 + 24 * sid), (DWORD)snd);
+    ((void (*)(WORD, int, int *, int))g_proc_00422D76)(sid, a, u, b); // original
+    snd = (void *)*(int *)(SOUNDS_FILES_LIST + 16 + 24 * sid);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 16 + 24 * sid), (DWORD)def_sound);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 8 + 24 * sid), (DWORD)def_name); // restore default
+}
+
+// PROC g_proc_00422D76;
+void sound_play_unit_speech(WORD sid, int a, int *u, int b)
+{
+    bool f = true;
+    if (u != NULL)
+    {
+        WORD sn = 0;
+        byte id = *((byte *)((uintptr_t)u + S_ID));
+        if ((id == U_PEASANT) || (id == U_DANATH) || (id == U_TYRALYON) || (id == U_KARGATH))
+        {
+            if (w_sounds_e)
+            {
+                if ((sid >= 223) && (sid <= 238)) // peasant
+                {
+                    sn = sid - 223;
+                    sound_play_unit_speech_replace(sid, a, u, b, hugh_sounds[sn], hugh_names[sn]);
+                    f = false;
+                }
+            }
+            if ((sid >= 262) && (sid <= 270)) // danath
+            {
+                sn = sid - 262;
+                sound_play_unit_speech_replace(sid, a, u, b, hugh_sounds[sn], hugh_names[sn]);
+                f = false;
+            }
+            // добавить ещё тириона со звуком даната
+        }
+    }
+
+    if (f)
+        ((void (*)(WORD, int, int *, int))g_proc_00422D76)(sid, a, u, b); // original
+}
+
+PROC g_proc_00422D5F;
+void sound_play_unit_speech_soft_replace(WORD sid, int a, int *u, int b, void *snd, char *name)
+{
+    def_name = (void *)*(int *)(SOUNDS_FILES_LIST + 8 + 24 * sid);
+    def_sound = (void *)*(int *)(SOUNDS_FILES_LIST + 16 + 24 * sid); // save default
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 8 + 24 * sid), (DWORD)name);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 16 + 24 * sid), (DWORD)snd);
+    ((void (*)(WORD, int, int *, int))g_proc_00422D5F)(sid, a, u, b); // original
+    snd = (void *)*(int *)(SOUNDS_FILES_LIST + 16 + 24 * sid);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 16 + 24 * sid), (DWORD)def_sound);
+    patch_setdword((DWORD *)(SOUNDS_FILES_LIST + 8 + 24 * sid), (DWORD)def_name); // restore default
+}
+
+// PROC g_proc_00422D5F;
+void sound_play_unit_speech_soft(WORD sid, int a, int *u, int b)
+{
+    bool f = true;
+    if (u != NULL)
+    {
+    }
+    if (f)
+        ((void (*)(WORD, int, int *, int))g_proc_00422D5F)(sid, a, u, b); // original
+}
+
 // write your custom victory functions here
 //-------------------------------------------------------------------------------
 void v_human1(bool rep_init) // Первая миссия
@@ -6720,7 +6878,7 @@ void v_human1(bool rep_init) // Первая миссия
         // обзор
         viz(P_WHITE, P_BLUE, 1);
 
-        // пираты стоят на берегу чтоб герой не просочился по берегу
+        // пират стоит на берегу чтоб герой не просочился по берегу
         set_region(37, 66, 43, 73);
         find_all_alive_units(U_GRUNT);
         sort_in_region();
@@ -6729,25 +6887,26 @@ void v_human1(bool rep_init) // Первая миссия
         // превращаем орков в людей
         unit_convert(P_BLACK, U_ODESTROYER, U_HDESTROYER, 1);
         unit_convert(P_BLACK, U_OTRANSPORT, U_HTRANSPORT, 1);
+        unit_convert(P_BLACK, U_OBARRACK, U_HBARRACK, 1);
 
         // создаём ГГ
-        find_all_alive_units(U_PEASANT);
-        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
-        unit_convert(P_WHITE, U_PEASANT, U_PEON, 1);
+        // find_all_alive_units(U_PEASANT);
+        // sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+        // unit_convert(P_WHITE, U_PEASANT, U_PEON, 1);
 
         // синие рабочие идут в форт
-        find_all_alive_units(U_PEASANT);
+        find_all_alive_units(U_ATTACK_PEASANT);
         sort_stat(S_OWNER, P_BLUE, CMP_EQ);
         order_all(26, 56, ORDER_MOVE);
 
         // орковский рабочий превращается в ГГ - Это уже не работает
-        find_all_alive_units(U_PEON);
-        sort_stat(S_COLOR, P_RED, CMP_EQ);
-        set_stat_all(S_COLOR, P_WHITE); // перекрашиваем юнитов в списке в белых - эта ебала чтоб не переделывать всех орков и постройки в людские
-        give_all(P_WHITE);              // передаём всех юнитов в списке белому
+        // find_all_alive_units(U_PEON);
+        // sort_stat(S_COLOR, P_RED, CMP_EQ);
+        // set_stat_all(S_COLOR, P_WHITE); // перекрашиваем юнитов в списке в белых - эта ебала чтоб не переделывать всех орков и постройки в людские
+        // give_all(P_WHITE);              // передаём всех юнитов в списке белому
 
         // проверка что есть барак в форте
-        find_all_alive_units(U_OBARRACK);
+        find_all_alive_units(U_HBARRACK);
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
         if (units > 0 && *(byte *)(GB_HORSES + 0) == 0)
         {
@@ -6779,7 +6938,7 @@ void v_human1(bool rep_init) // Первая миссия
 
         // герой подошел к башне
         set_region(61, 39, 63, 40); // установить регион
-        find_all_alive_units(U_PEON);
+        find_all_alive_units(U_PEASANT);
         sort_in_region();
         if (units > 0 && *(byte *)(GB_HORSES + 0) == 1)
         {
@@ -6791,28 +6950,28 @@ void v_human1(bool rep_init) // Первая миссия
 
         if (*(byte *)(GB_HORSES + 0) == 2)
         {
-
-            if (*(byte *)(GB_HORSES + 12) == 0) // таймер 1 раз
+            if (*(byte *)(GB_HORSES + 6) == 0) //  1 раз
             {
                 char mess[] = "Run to the Baron's castle under his protection.";
                 show_message(5, mess);
                 viz_area_add(82, 14, 1 << P_WHITE, 9); // открыть карту для белого размером в 7 клеток
+                *(byte *)(GB_HORSES + 6) = 1;
+            }
 
-                if (*(byte *)(GB_HORSES + 13) < 2)
-                    *(byte *)(GB_HORSES + 13) = *(byte *)(GB_HORSES + 13) + 1;
-                else
+            if (*(byte *)(GB_HORSES + 13) < 2)
+                *(byte *)(GB_HORSES + 13) = *(byte *)(GB_HORSES + 13) + 1;
+            else
+            {
+
+                if (*(byte *)(GB_HORSES + 11) < 3)
+                    *(byte *)(GB_HORSES + 11) = *(byte *)(GB_HORSES + 13) + 1; // тут нужен таймер чтоб крестьяне не сразу вооружались
                 {
-
-                    if (*(byte *)(GB_HORSES + 11) < 3)
-                        *(byte *)(GB_HORSES + 11) = *(byte *)(GB_HORSES + 13) + 1; // тут нужен таймер чтоб крестьяне не сразу вооружались
-                    {
-                        unit_convert(P_ORANGE, U_ATTACK_PEASANT, U_FOOTMAN, 1); // превращаем злых крестьян в футов, всегда 1 ставим хз нахуй
-                    }
-                    // изменить цель миссии
-
-                    *(byte *)(GB_HORSES + 12) = 1; // таймер 1 раз
-                    *(byte *)(GB_HORSES + 0) = 3;  // чекпоинт 2
+                    unit_convert(P_ORANGE, U_ATTACK_PEASANT, U_FOOTMAN, 1); // превращаем злых крестьян в футов, всегда 1 ставим хз нахуй
                 }
+                // изменить цель миссии
+
+                *(byte *)(GB_HORSES + 12) = 1; // 1 раз
+                *(byte *)(GB_HORSES + 0) = 3;  // чекпоинт 2
             }
         }
 
@@ -6826,7 +6985,7 @@ void v_human1(bool rep_init) // Первая миссия
 
         // герой прибыл к барону
         set_region(82, 14, 83, 15); // установить регион
-        find_all_alive_units(U_PEON);
+        find_all_alive_units(U_PEASANT);
         sort_in_region();
 
         if (units > 0 && *(byte *)(GB_HORSES + 0) == 3)
@@ -6849,7 +7008,7 @@ void v_human1(bool rep_init) // Первая миссия
         set_stat_all(S_COLOR, P_BLACK);
 
         set_region(70, 55, 95, 70); // установить регион
-        find_all_alive_units(U_PEON);
+        find_all_alive_units(U_PEASANT);
         sort_in_region();
 
         if (units > 0)
@@ -6860,7 +7019,7 @@ void v_human1(bool rep_init) // Первая миссия
 
         // герой прибыл в порт
         set_region(59, 75, 60, 76); // установить регион
-        find_all_alive_units(U_PEON);
+        find_all_alive_units(U_PEASANT);
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
         sort_in_region();
 
@@ -6871,7 +7030,7 @@ void v_human1(bool rep_init) // Первая миссия
             give_all(P_WHITE);
 
             // убрать героя с карты
-            find_all_alive_units(U_PEON);
+            find_all_alive_units(U_PEASANT);
             remove_all();
 
             // дать обзор куда плыть
@@ -6891,23 +7050,18 @@ void v_human1(bool rep_init) // Первая миссия
             win(true);
         }
 
-        find_all_alive_units(U_PEON);
+        find_all_alive_units(U_BATTLESHIP);
         sort_stat(S_OWNER, P_WHITE, CMP_EQ);
         if (units == 0)
         {
-            find_all_alive_units(U_BATTLESHIP);
+            find_all_alive_units(U_PEASANT);
             sort_stat(S_OWNER, P_WHITE, CMP_EQ);
             if (units == 0)
             {
-                find_all_alive_units(U_PEASANT);
-                sort_stat(S_OWNER, P_WHITE, CMP_EQ);
-                if (units == 0)
-                {
-                    if (*(byte *)(GB_HORSES + 8) < 2)
-                        *(byte *)(GB_HORSES + 8) = *(byte *)(GB_HORSES + 8) + 1;
-                    else
-                        lose(true);
-                }
+                if (*(byte *)(GB_HORSES + 8) < 2)
+                    *(byte *)(GB_HORSES + 8) = *(byte *)(GB_HORSES + 8) + 1;
+                else
+                    lose(true);
             }
         }
 
@@ -6940,11 +7094,338 @@ void v_human2(bool rep_init)
 {
     if (rep_init)
     {
+        saveload_fixed = true;
         // your initialize
     }
     else
     {
-        //  your custom victory conditions
+
+        // Враги
+        ally(P_BLACK, P_BLUE, 0);
+        ally(P_GREEN, P_BLUE, 0);
+        ally(P_RED, P_BLUE, 0);
+
+        // Союзники
+        ally(P_WHITE, P_BLUE, 1);
+        ally(P_WHITE, P_YELLOW, 1);
+
+        // обзор
+        // viz(P_WHITE, P_YELLOW, 1);
+        // viz(P_WHITE, P_VIOLET, 1); // пробуем
+
+        // Делаем всех компов черными
+        find_all_alive_units(ANY_MEN);
+        sort_stat(S_OWNER, P_GREEN, CMP_EQ);
+        set_stat_all(S_COLOR, P_BLACK);
+        find_all_alive_units(ANY_MEN);
+        sort_stat(S_OWNER, P_RED, CMP_EQ);
+        set_stat_all(S_COLOR, P_BLACK);
+        find_all_alive_units(U_HSMITH);
+        set_stat_all(S_COLOR, P_BLACK);
+
+        // тестовый виз!!!
+        viz(P_WHITE, P_RED, 1);
+        viz(P_WHITE, P_GREEN, 1);
+
+        // Утера в оранжевый
+        find_all_alive_units(U_UTER);
+        set_stat_all(S_COLOR, P_BLUE);
+
+        // красных в черных
+        find_all_alive_units(ANY_MEN);
+        sort_stat(S_OWNER, P_RED, CMP_EQ);
+        set_stat_all(S_COLOR, P_BLACK);
+
+        // превращаем орковские юниты в людские
+        unit_convert(P_GREEN, U_ODESTROYER, U_HDESTROYER, 1);
+
+        // Только утер может победить непобедимого огра
+        ua[0] = U_UTER;
+        ut[0] = U_DENTARG;
+
+        viz_area_add(60, 5, 1 << P_WHITE, 1);
+
+        // Гномы взрывают горы
+        find_all_alive_units(U_DWARWES);
+        set_region(26, 1, 26, 1);
+        sort_in_region();
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 10) == 0)
+            {
+                bullet_create(27, 1, B_BOOM_FIRE);
+                tile_remove_rocks(27, 1);
+                tile_remove_rocks(28, 1);
+
+                *(byte *)(GB_HORSES + 10) = 1;
+            }
+        }
+
+        find_all_alive_units(U_DWARWES);
+        set_region(33, 1, 33, 1);
+        sort_in_region();
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 11) == 0)
+            {
+                tile_remove_rocks(34, 1);
+                tile_remove_rocks(35, 1);
+
+                *(byte *)(GB_HORSES + 11) = 1;
+            }
+        }
+
+        find_all_alive_units(U_DWARWES);
+        set_region(41, 2, 41, 2);
+        sort_in_region();
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 12) == 0)
+            {
+                tile_remove_rocks(42, 2);
+                tile_remove_rocks(43, 2);
+                tile_remove_rocks(44, 2);
+                tile_remove_rocks(45, 2);
+                tile_remove_rocks(46, 2);
+                tile_remove_rocks(47, 2);
+                tile_remove_rocks(48, 2);
+                tile_remove_rocks(49, 2);
+                tile_remove_rocks(50, 2);
+                tile_remove_rocks(51, 2);
+
+                *(byte *)(GB_HORSES + 12) = 1;
+            }
+        }
+
+        // Вооружаем крестьян в кузне
+        find_all_alive_units(U_PEASANT);
+        set_region(58, 3, 62, 7);
+        sort_in_region();
+        give_all(P_YELLOW);
+        if (units > 0)
+        {
+            find_all_alive_units(U_PEASANT);
+            set_region(58, 3, 62, 7);
+            sort_in_region();
+            sort_stat(S_OWNER, P_YELLOW, CMP_EQ);
+            unit_convert(P_YELLOW, U_PEASANT, U_DANATH, 1);
+            give_all(P_WHITE);
+        }
+
+        set_region(58, 3, 62, 7);
+        find_all_alive_units(U_ATTACK_PEASANT);
+        sort_in_region();
+        give_all(P_YELLOW);
+        if (units > 0)
+        {
+            find_all_alive_units(U_ATTACK_PEASANT);
+            set_region(58, 3, 62, 7);
+            sort_in_region();
+            sort_stat(S_OWNER, P_YELLOW, CMP_EQ);
+            unit_convert(P_YELLOW, U_ATTACK_PEASANT, U_FOOTMAN, 1);
+            give_all(P_WHITE);
+        }
+
+        // Огр начинает бить лучников
+        if (*(byte *)(GB_HORSES + 15) < 20)
+            *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
+        else
+        {
+            if (*(byte *)(GB_HORSES + 9) == 0)
+            {
+                char message[] = "We need to save the archers"; // Нужно спасти лучников!"
+                show_message(5, message);
+                viz_area_add(4, 4, 1 << P_WHITE, 3);
+                ally_one_sided(P_YELLOW, P_VIOLET, 0);
+
+                *(byte *)(GB_HORSES + 9) = 1;
+            }
+        }
+
+        // если огр умирает лучники переходят игроку
+        find_all_alive_units(U_OGRE);
+        if (units == 0)
+        {
+            find_all_alive_units(U_ARCHER);
+            sort_stat(S_OWNER, P_YELLOW, CMP_EQ);
+            give_all(P_WHITE);
+            find_all_alive_units(U_RANGER);
+            sort_stat(S_OWNER, P_YELLOW, CMP_EQ);
+            give_all(P_WHITE);
+            *(byte *)(GB_HORSES + 0) = 1; // чекпоинт 1
+        }
+
+        if (*(byte *)(GB_HORSES + 0) == 1)
+        {
+            if (*(byte *)(GB_HORSES + 8) == 0)
+            {
+                char message[] = "Bart Vigilant: We need to light a lighthouse, it will distract the pirates!"; // Барт Зоркий: Нужно зажечь маяк, это отвлечёт пиратов!
+                show_message(5, message);
+                // center_view(75, 27);
+                viz_area_add(80, 33, 1 << P_WHITE, 3);
+
+                *(byte *)(GB_HORSES + 8) = 1;
+            }
+            // тут камера должна переместиться на 74, 27
+            *(byte *)(GB_HORSES + 0) = 0;
+        }
+
+        // проверка поджига маяка
+        set_region(80, 32, 81, 33);
+        find_all_alive_units(U_HTOWER);
+        sort_in_region();
+        sort_stat(S_HP, 95, CMP_SMALLER_EQ);
+        if (units > 0)
+        {
+            set_region(80, 32, 81, 33);
+            find_all_alive_units(U_HTOWER);
+            sort_in_region();
+            set_stat_all(S_HP, 30);
+            *(byte *)(GB_HORSES + 0) = 2; // чекпоинт 2
+        }
+
+        if (*(byte *)(GB_HORSES + 0) == 2)
+        {
+            if (*(byte *)(GB_HORSES + 7) == 0)
+            {
+
+                char message[] = "Pirate: We are under the attack!"; // Пират: На нас напали, тревога!
+                show_message(5, message);
+                viz_area_add(10, 52, 1 << P_WHITE, 6);
+                viz_area_add(85, 65, 1 << P_WHITE, 6);
+                *(byte *)(GB_HORSES + 7) = 1;
+            }
+
+            find_all_alive_units(U_GRUNT);
+            sort_stat(S_OWNER, P_GREEN, CMP_EQ);
+            order_all(60, 30, ORDER_ATTACK_AREA);
+
+            find_all_alive_units(U_HDESTROYER);
+            sort_stat(S_OWNER, P_GREEN, CMP_EQ);
+            order_all(90, 35, ORDER_ATTACK_AREA);
+
+            *(byte *)(GB_HORSES + 0) = 0;
+        }
+
+        find_all_alive_units(U_UTER);
+        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 5) == 0)
+            {
+                char message[] = "Sir Uter: I can kill, a thick-skinned man!"; // Кастелян: Я могу убить толстокожего!
+                show_message(5, message);
+                viz_area_add(24, 73, 1 << P_WHITE, 2);
+                *(byte *)(GB_HORSES + 5) = 1;
+            }
+        }
+
+        // Непробиваемый страж удерживает позицию
+        find_all_alive_units(U_DENTARG);
+        order_all(12, 61, ORDER_STAND);
+
+        // Если Страж умер создать пиратов для нападения
+        if (units == 0)
+        {
+            find_all_alive_units(U_UTER);
+            give_all(P_BLUE);
+
+            *(byte *)(GB_HORSES + 0) = 3; // чекпоинт 3
+        }
+
+        if (*(byte *)(GB_HORSES + 0) == 3)
+        {
+            if (*(byte *)(GB_HORSES + 6) == 0)
+            {
+                char message[] = "Castellan: Run, I'll detain them!"; // Кастелян: Бегите на корабль, я их задержу!
+                show_message(5, message);
+                *(byte *)(GB_HORSES + 6) = 1;
+
+                unit_create(26, 65, U_GRUNT, P_BLACK, 4);
+                unit_create(30, 55, U_GRUNT, P_BLACK, 4);
+                unit_create(32, 68, U_GRUNT, P_BLACK, 4);
+            }
+
+            find_all_alive_units(U_GRUNT);
+            set_region(20, 56, 43, 71);
+            sort_in_region();
+            order_all(25, 78, ORDER_ATTACK_AREA);
+
+            *(byte *)(GB_HORSES + 0) = 0;
+        }
+
+        // герои прыгают на корабль
+        find_all_alive_units(U_DANATH);
+        set_region(36, 85, 37, 86);
+        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+        sort_in_region();
+
+        if (units > 0)
+        {
+            *(byte *)(GB_HORSES + 0) = 4;
+        }
+        find_all_alive_units(U_RANGER);
+        set_region(36, 85, 37, 86);
+        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+        sort_in_region();
+
+        if (units > 0)
+        {
+            *(byte *)(GB_HORSES + 1) = 5;
+        }
+
+        if (*(byte *)(GB_HORSES + 0) == 4)
+        {
+            if (*(byte *)(GB_HORSES + 1) == 5)
+            {
+
+                // передать корабль игроку
+                find_all_alive_units(U_BATTLESHIP);
+                give_all(P_WHITE);
+
+                // сели на корабль
+                find_all_alive_units(ANY_UNITS);
+                set_region(36, 85, 37, 86);
+                sort_in_region();
+                remove_all();
+                viz_area_add(85, 85, 1 << P_WHITE, 5);
+            }
+        }
+
+        // условие поражения
+
+        find_all_alive_units(U_PEASANT);
+        int sum = units;
+        find_all_alive_units(U_DANATH);
+        sum = sum + units;
+        find_all_alive_units(U_RANGER);
+        sum = sum + units;
+
+        if (sum < 2)
+        {
+            find_all_alive_units(U_BATTLESHIP);
+            sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+            if (units == 0)
+            {
+                if (*(byte *)(GB_HORSES + 4) < 2)
+                    *(byte *)(GB_HORSES + 4) = *(byte *)(GB_HORSES + 4) + 1;
+                else
+                    lose(true);
+            }
+        }
+
+        // условие победы
+        set_region(80, 80, 95, 95);
+        find_all_alive_units(U_BATTLESHIP);
+        sort_in_region();
+        if (units > 0)
+        {
+
+            if (*(byte *)(GB_HORSES + 8) < 1)
+                *(byte *)(GB_HORSES + 8) = *(byte *)(GB_HORSES + 8) + 1;
+            else
+                win(true);
+        }
     }
 }
 
@@ -7785,6 +8266,14 @@ void hook(int adr, PROC *p, char *func)
 }
 
 int *portrait_unit;
+
+PROC g_proc_0044538D;
+void grp_portrait_init(int *a)
+{
+    ((void (*)(int *))g_proc_0044538D)(a); // original
+    portrait_unit = (int *)*((int *)((uintptr_t)a + 0x26));
+}
+
 PROC g_proc_004453A7; // draw unit portrait
 void grp_draw_portrait(void *grp, byte frame, int b, int c)
 {
@@ -7795,6 +8284,19 @@ void grp_draw_portrait(void *grp, byte frame, int b, int c)
     if (u != NULL)
     {
         byte id = *((byte *)((uintptr_t)u + S_ID));
+        if (id == U_PEASANT)
+        {
+            if ((*(byte *)LEVEL_OBJ == LVL_HUMAN1) || (*(byte *)LEVEL_OBJ == LVL_HUMAN2))
+            {
+
+                byte o = *((byte *)((uintptr_t)u + S_OWNER));
+                // if (o != *(byte *)LOCAL_PLAYER)
+                // {
+                new_grp = grg_hugh_icon;
+                frame = 0;
+                f = false;
+            }
+        }
     }
 
     if (f)
@@ -7835,6 +8337,7 @@ void files_hooks()
     hook(0x0041F0F5, &g_proc_0041F0F5, (char *)finale_get_tbl);
     hook(0x0041C51C, &g_proc_0041C51C, (char *)netstat_get_tbl_nation); // нации при победе или поражении
     hook(0x004453A7, &g_proc_004453A7, (char *)grp_draw_portrait);      // icons
+    hook(0x0044538D, &g_proc_0044538D, (char *)grp_portrait_init);
 }
 
 void common_hooks()
