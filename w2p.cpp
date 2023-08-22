@@ -6876,6 +6876,7 @@ void v_human1(bool rep_init) // Первая миссия
         ally(P_WHITE, P_RED, 1);
 
         // обзор
+        comps_vision(true); // компы могут давать виз
         viz(P_WHITE, P_BLUE, 1);
 
         // пират стоит на берегу чтоб герой не просочился по берегу
@@ -7078,13 +7079,11 @@ void v_human1(bool rep_init) // Первая миссия
         // - Синий и белый могут видеть друг друга
 
         byte local = *(byte *)LOCAL_PLAYER;
-        comps_vision(true);
+
         if (!slot_alive(local))
             lose(true);
         if (get_val(FARM, local) >= 2)
             win(true);
-        ally(P_WHITE, P_BLUE, 1);
-        viz(P_WHITE, P_BLUE, 1);
         // char mess[] = "pidec";
         // show_message(5, mess);
     }
@@ -7102,6 +7101,7 @@ void v_human2(bool rep_init)
 
         // Враги
         ally(P_BLACK, P_BLUE, 0);
+        ally(P_VIOLET, P_BLUE, 0);
         ally(P_GREEN, P_BLUE, 0);
         ally(P_RED, P_BLUE, 0);
 
@@ -7114,27 +7114,22 @@ void v_human2(bool rep_init)
         // viz(P_WHITE, P_VIOLET, 1); // пробуем
 
         // Делаем всех компов черными
-        find_all_alive_units(ANY_MEN);
+        find_all_alive_units(ANY_UNITS);
         sort_stat(S_OWNER, P_GREEN, CMP_EQ);
         set_stat_all(S_COLOR, P_BLACK);
-        find_all_alive_units(ANY_MEN);
+
+        find_all_alive_units(ANY_UNITS);
         sort_stat(S_OWNER, P_RED, CMP_EQ);
         set_stat_all(S_COLOR, P_BLACK);
+
         find_all_alive_units(U_HSMITH);
         set_stat_all(S_COLOR, P_BLACK);
 
-        // тестовый виз!!!
-        viz(P_WHITE, P_RED, 1);
-        viz(P_WHITE, P_GREEN, 1);
+        comps_vision(true); // чтоб компы могли давать виз
 
-        // Утера в оранжевый
+        // Утера в синий
         find_all_alive_units(U_UTER);
         set_stat_all(S_COLOR, P_BLUE);
-
-        // красных в черных
-        find_all_alive_units(ANY_MEN);
-        sort_stat(S_OWNER, P_RED, CMP_EQ);
-        set_stat_all(S_COLOR, P_BLACK);
 
         // превращаем орковские юниты в людские
         unit_convert(P_GREEN, U_ODESTROYER, U_HDESTROYER, 1);
@@ -7235,7 +7230,7 @@ void v_human2(bool rep_init)
             {
                 char message[] = "We need to save the archers"; // Нужно спасти лучников!"
                 show_message(5, message);
-                viz_area_add(4, 4, 1 << P_WHITE, 3);
+                viz(P_WHITE, P_YELLOW, 1);
                 ally_one_sided(P_YELLOW, P_VIOLET, 0);
 
                 *(byte *)(GB_HORSES + 9) = 1;
@@ -7291,8 +7286,7 @@ void v_human2(bool rep_init)
 
                 char message[] = "Pirate: We are under the attack!"; // Пират: На нас напали, тревога!
                 show_message(5, message);
-                viz_area_add(10, 52, 1 << P_WHITE, 6);
-                viz_area_add(85, 65, 1 << P_WHITE, 6);
+                viz(P_WHITE, P_GREEN, 1);
                 *(byte *)(GB_HORSES + 7) = 1;
             }
 
@@ -7320,6 +7314,21 @@ void v_human2(bool rep_init)
             }
         }
 
+        // Утер переходит компу рядом с Огром
+        find_all_alive_units(U_UTER);
+        set_region(24, 72, 25, 72);
+        sort_in_region();
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 13) == 0)
+            {
+                find_all_alive_units(U_UTER);
+                give_all(P_BLUE);
+
+                *(byte *)(GB_HORSES + 13) = 1;
+            }
+        }
+
         // Непробиваемый страж удерживает позицию
         find_all_alive_units(U_DENTARG);
         order_all(12, 61, ORDER_STAND);
@@ -7327,8 +7336,9 @@ void v_human2(bool rep_init)
         // Если Страж умер создать пиратов для нападения
         if (units == 0)
         {
-            find_all_alive_units(U_UTER);
-            give_all(P_BLUE);
+            viz(P_WHITE, P_BLUE, 1);
+            // find_all_alive_units(U_UTER);
+            // give_all(P_BLUE);
 
             *(byte *)(GB_HORSES + 0) = 3; // чекпоинт 3
         }
@@ -7385,7 +7395,7 @@ void v_human2(bool rep_init)
 
                 // сели на корабль
                 find_all_alive_units(ANY_UNITS);
-                set_region(36, 85, 37, 86);
+                set_region(33, 79, 38, 90);
                 sort_in_region();
                 remove_all();
                 viz_area_add(85, 85, 1 << P_WHITE, 5);
