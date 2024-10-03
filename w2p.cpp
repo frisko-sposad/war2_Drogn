@@ -6309,6 +6309,36 @@ int map_file_load(int a, int b, void **map, DWORD *size)
             *size = pud_map2_size;
             f = true;
         }
+        else if (lvl == LVL_HUMAN3)
+        {
+            *map = pud_map3;
+            *size = pud_map3_size;
+            f = true;
+        }
+        else if (lvl == LVL_HUMAN4)
+        {
+            *map = pud_map4;
+            *size = pud_map4_size;
+            f = true;
+        }
+        else if (lvl == LVL_HUMAN5)
+        {
+            *map = pud_map5;
+            *size = pud_map5_size;
+            f = true;
+        }
+        else if (lvl == LVL_HUMAN6)
+        {
+            *map = pud_map6;
+            *size = pud_map6_size;
+            f = true;
+        }
+        else if (lvl == LVL_HUMAN7)
+        {
+            *map = pud_map7;
+            *size = pud_map7_size;
+            f = true;
+        }
     }
     if (f)
         return 1;
@@ -6458,6 +6488,11 @@ void files_init()
 {
     file_load_size("maps\\dr01.pud", &pud_map1, &pud_map1_size);
     file_load_size("maps\\dr02.pud", &pud_map2, &pud_map2_size);
+    file_load_size("maps\\dr03.pud", &pud_map3, &pud_map3_size);
+    file_load_size("maps\\dr04.pud", &pud_map4, &pud_map4_size);
+    file_load_size("maps\\dr05.pud", &pud_map5, &pud_map5_size);
+    file_load_size("maps\\dr06.pud", &pud_map6, &pud_map6_size);
+    file_load_size("maps\\dr07.pud", &pud_map7, &pud_map7_size);
     grg_hugh = file_load("units\\hugh.grp");
     grg_hugh_icon = file_load("icons\\hugh_icon.grp");
     grg_pirat = file_load("units\\pirat.grp");
@@ -6534,7 +6569,7 @@ int objct_get_tbl_campanign(void *tbl, WORD str_id)
         new_tbl = tbl_task5;
     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
         new_tbl = tbl_task6;
-    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+    else if ((lvl == LVL_HUMAN7) || (lvl == LVL_XHUMAN7))
         new_tbl = tbl_task7;
     else if (lvl == LVL_HUMAN10)
         return (int)tbl_task_secret;
@@ -6568,7 +6603,7 @@ int objct_get_tbl_briefing_task(void *tbl, WORD str_id)
         new_tbl = tbl_task5;
     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
         new_tbl = tbl_task6;
-    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+    else if ((lvl == LVL_HUMAN7) || (lvl == LVL_XHUMAN7))
         new_tbl = tbl_task7;
     else if (lvl == LVL_HUMAN10)
         return (int)tbl_task_secret;
@@ -6602,7 +6637,7 @@ int objct_get_tbl_briefing_title(void *tbl, WORD str_id)
         new_tbl = tbl_title5;
     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
         new_tbl = tbl_title6;
-    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+    else if ((lvl == LVL_HUMAN7) || (lvl == LVL_XHUMAN7))
         new_tbl = tbl_title7;
     else if (lvl == LVL_HUMAN10)
         new_tbl = tbl_title8;
@@ -6702,7 +6737,7 @@ int objct_get_tbl_briefing_text(void *tbl, WORD str_id)
         new_tbl = tbl_brif5;
     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
         new_tbl = tbl_brif6;
-    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+    else if ((lvl == LVL_HUMAN7) || (lvl == LVL_XHUMAN7))
         new_tbl = tbl_brif7;
     else if (lvl == LVL_HUMAN10)
         return (int)tbl_brif_secret;
@@ -6743,7 +6778,7 @@ int objct_get_briefing_speech(char *speech)
         set_speech(speech, story5);
     else if ((lvl == LVL_HUMAN6) || (lvl == LVL_XHUMAN6))
         set_speech(speech, story6);
-    else if ((lvl == LVL_HUMAN14) || (lvl == LVL_XHUMAN12))
+    else if ((lvl == LVL_HUMAN7) || (lvl == LVL_XHUMAN7))
         set_speech(speech, story7);
     else if (lvl == LVL_HUMAN10)
         set_speech(speech, story_secret);
@@ -7443,11 +7478,152 @@ void v_human3(bool rep_init)
 {
     if (rep_init)
     {
+        saveload_fixed = true;
         // your initialize
     }
     else
     {
-        //  your custom victory conditions
+        // Враги
+        ally(P_BLUE, P_VIOLET, 0);
+        ally(P_BLUE, P_BLACK, 0);
+        ally(P_BLACK, P_YELLOW, 0);
+        ally(P_BLACK, P_WHITE, 0);
+        ally(P_BLACK, P_ORANGE, 0);
+        ally(P_VIOLET, P_WHITE, 0);
+        ally(P_VIOLET, P_ORANGE, 0);
+
+        // Союзники
+        ally(P_ORANGE, P_BLUE, 1);
+        ally(P_ORANGE, P_YELLOW, 1);
+        ally(P_ORANGE, P_WHITE, 1);
+        ally(P_ORANGE, P_GREEN, 1);
+        ally(P_WHITE, P_BLUE, 1);
+        ally(P_GREEN, P_BLUE, 1);
+        ally(P_GREEN, P_YELLOW, 1);
+        ally(P_GREEN, P_WHITE, 1);
+
+        ally(P_BLACK, P_VIOLET, 1);
+
+        // обзор
+        comps_vision(true); // компы могут давать виз
+        viz(P_WHITE, P_BLUE, 1);
+        viz(P_WHITE, P_ORANGE, 1);
+
+        // Создание волн пиратов пока не появились юниты синего
+        find_all_alive_units(U_KNIGHT);
+        sort_stat(S_OWNER, P_BLUE, CMP_EQ);
+        if (units == 0)
+        {
+            if (*(byte *)(GB_HORSES + 14) == 0) // таймер 1 раз
+            {
+                if (*(byte *)(GB_HORSES + 15) < 6)
+                    *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
+                else
+                {
+                    // нападение черных
+                    unit_create(26, 46, U_GRUNT, P_BLACK, 3);
+                    unit_create(26, 59, U_GRUNT, P_BLACK, 8);
+                    unit_create(26, 72, U_GRUNT, P_BLACK, 5);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(20, 43, 32, 50);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(30, 4, ORDER_PATROL);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(21, 0, 40, 10);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(88, 7, ORDER_PATROL);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(19, 56, 33, 62);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(88, 7, ORDER_PATROL);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(17, 66, 33, 77);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(75, 75, ORDER_PATROL);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(56, 69, 87, 84);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(88, 7, ORDER_PATROL);
+
+                    find_all_alive_units(U_GRUNT);
+                    set_region(19, 56, 33, 62);
+                    sort_in_region();
+                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                    order_all(88, 7, ORDER_PATROL);
+
+                    *(byte *)(GB_HORSES + 14) = 1; // таймер 1 раз
+
+                    // если есть лесопилка создаю крестьян
+                    find_all_alive_units(U_HLUMBER);
+                    sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+                    if (units != 0)
+                    {
+                        unit_create(30, 2, U_ATTACK_PEASANT, P_ORANGE, 3);
+                        // крестьяне бегут с лесопилки в город к бараку
+                        find_all_alive_units(U_ATTACK_PEASANT);
+                        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+                        order_all(86, 2, ORDER_MOVE);
+                    }
+                }
+            }
+            else
+            {
+                unit_create(19, 8, U_KNIGHT, P_BLUE, 12);
+                unit_create(63, 88, U_KNIGHT, P_BLUE, 12);
+            }
+        }
+
+        // Конница сначала бежит в замок барона, а потом атачит форт пиратов
+        find_all_alive_units(U_KNIGHT);
+        set_region(11, 0, 31, 15); // установить регион
+        sort_in_region();
+        order_all(85, 7, ORDER_PATROL);
+
+        find_all_alive_units(U_KNIGHT);
+        set_region(50, 80, 80, 93); // установить регион
+        sort_in_region();
+        order_all(85, 7, ORDER_PATROL);
+
+        find_all_alive_units(U_KNIGHT);
+        set_region(69, 0, 95, 23); // установить регион
+        sort_in_region();
+        order_all(20, 60, ORDER_PATROL);
+
+        // Превращение в футов оранжевого
+        find_all_alive_units(U_ATTACK_PEASANT);
+        set_region(78, 0, 86, 6);
+        sort_in_region();
+        give_all(P_BLUE);
+
+        find_all_alive_units(U_ATTACK_PEASANT);
+        sort_stat(S_OWNER, P_BLUE, CMP_EQ);
+        unit_convert(P_BLUE, U_ATTACK_PEASANT, U_FOOTMAN, 1);
+
+        // Превращение в футов белого
+        find_all_alive_units(U_PEASANT);
+        set_region(78, 0, 86, 6);
+        sort_in_region();
+        sort_stat(S_OWNER, P_WHITE, CMP_EQ);
+        give_all(P_GREEN);
+
+        find_all_alive_units(U_PEASANT);
+        sort_stat(S_OWNER, P_GREEN, CMP_EQ);
+        unit_convert(P_GREEN, U_PEASANT, U_FOOTMAN, 1);
+        give_all(P_WHITE);
+
+        {
+            //  your custom victory conditions
+        }
     }
 }
 
