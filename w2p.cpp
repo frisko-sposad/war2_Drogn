@@ -7518,7 +7518,7 @@ void v_human3(bool rep_init)
 
         if (*(byte *)(GB_HORSES + 14) < 9)
         {
-            if (*(byte *)(GB_HORSES + 15) < 6) // таймер на 20
+            if (*(byte *)(GB_HORSES + 15) < 20) // таймер на 20
                 *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
             else
             {
@@ -7589,21 +7589,38 @@ void v_human3(bool rep_init)
         sort_stat(S_OWNER, P_BLACK, CMP_EQ);
         order_all(88, 7, ORDER_PATROL);
 
+        // нападение кораблей пиратов
+        find_all_alive_units(U_HDESTROYER);
+        order_all(56, 73, ORDER_PATROL);
+
         // Конница сначала бежит в замок барона, а потом атачит форт пиратов
+        find_all_alive_units(U_KNIGHT);
+        sort_stat(S_OWNER, P_BLUE, CMP_EQ);
+        give_all(P_ORANGE); // Передаём конницу оранжевому
+
         find_all_alive_units(U_KNIGHT);
         set_region(11, 0, 31, 15); // установить регион
         sort_in_region();
-        order_all(85, 7, ORDER_PATROL);
+        order_all(85, 7, ORDER_ATTACK);
 
         find_all_alive_units(U_KNIGHT);
         set_region(50, 80, 80, 93); // установить регион
         sort_in_region();
-        order_all(85, 7, ORDER_PATROL);
+        order_all(85, 7, ORDER_ATTACK);
 
         find_all_alive_units(U_KNIGHT);
         set_region(69, 0, 95, 23); // установить регион
         sort_in_region();
-        order_all(20, 60, ORDER_PATROL);
+        order_all(20, 60, ORDER_ATTACK);
+
+        // Оранжевые футы патрулируют окресности
+        find_all_alive_units(U_FOOTMAN);
+        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+        order_all(73, 19, ORDER_PATROL);
+
+        // Лотар держит позицию
+        find_all_alive_units(U_LOTHAR);
+        order_all(84, 14, ORDER_STAND);
 
         // Превращение в футов оранжевого
         find_all_alive_units(U_ATTACK_PEASANT);
@@ -7627,8 +7644,32 @@ void v_human3(bool rep_init)
         unit_convert(P_GREEN, U_PEASANT, U_FOOTMAN, 1);
         give_all(P_WHITE);
 
+        // условие поражения
+        find_all_alive_units(U_LOTHAR);
+        int sum = units;
+        find_all_alive_units(U_DANATH);
+        sum = sum + units;
+
+        if (sum < 2)
         {
-            //  your custom victory conditions
+            // задержка перед поражением, чтоб успеть загрузиться
+            if (*(byte *)(GB_HORSES + 4) < 2)
+                *(byte *)(GB_HORSES + 4) = *(byte *)(GB_HORSES + 4) + 1;
+            else
+                lose(true);
+        }
+
+        // условие победы
+        find_all_alive_units(U_HBARRACK);
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+
+        if (units == 0)
+        {
+            // задержка перед победой
+            if (*(byte *)(GB_HORSES + 8) < 1)
+                *(byte *)(GB_HORSES + 8) = *(byte *)(GB_HORSES + 8) + 1;
+            else
+                win(true);
         }
     }
 }
