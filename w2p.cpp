@@ -7509,79 +7509,85 @@ void v_human3(bool rep_init)
         viz(P_WHITE, P_BLUE, 1);
         viz(P_WHITE, P_ORANGE, 1);
 
-        // Создание волн пиратов пока не появились юниты синего
-        find_all_alive_units(U_KNIGHT);
-        sort_stat(S_OWNER, P_BLUE, CMP_EQ);
-        if (units == 0)
+        // Делаем всех компов черными
+        find_all_alive_units(ANY_UNITS);
+        sort_stat(S_OWNER, P_VIOLET, CMP_EQ);
+        set_stat_all(S_COLOR, P_BLACK);
+
+        // Создание волн пиратов 9 волн
+
+        if (*(byte *)(GB_HORSES + 14) < 9)
         {
-            if (*(byte *)(GB_HORSES + 14) == 0) // таймер 1 раз
-            {
-                if (*(byte *)(GB_HORSES + 15) < 6)
-                    *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
-                else
-                {
-                    // нападение черных
-                    unit_create(26, 46, U_GRUNT, P_BLACK, 3);
-                    unit_create(26, 59, U_GRUNT, P_BLACK, 8);
-                    unit_create(26, 72, U_GRUNT, P_BLACK, 5);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(20, 43, 32, 50);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(30, 4, ORDER_PATROL);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(21, 0, 40, 10);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(88, 7, ORDER_PATROL);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(19, 56, 33, 62);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(88, 7, ORDER_PATROL);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(17, 66, 33, 77);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(75, 75, ORDER_PATROL);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(56, 69, 87, 84);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(88, 7, ORDER_PATROL);
-
-                    find_all_alive_units(U_GRUNT);
-                    set_region(19, 56, 33, 62);
-                    sort_in_region();
-                    sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                    order_all(88, 7, ORDER_PATROL);
-
-                    *(byte *)(GB_HORSES + 14) = 1; // таймер 1 раз
-
-                    // если есть лесопилка создаю крестьян
-                    find_all_alive_units(U_HLUMBER);
-                    sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
-                    if (units != 0)
-                    {
-                        unit_create(30, 2, U_ATTACK_PEASANT, P_ORANGE, 3);
-                        // крестьяне бегут с лесопилки в город к бараку
-                        find_all_alive_units(U_ATTACK_PEASANT);
-                        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
-                        order_all(86, 2, ORDER_MOVE);
-                    }
-                }
-            }
+            if (*(byte *)(GB_HORSES + 15) < 6) // таймер на 20
+                *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
             else
+            {
+                // создание пиратов
+                unit_create(26, 46, U_GRUNT, P_BLACK, 3);
+                unit_create(26, 59, U_GRUNT, P_BLACK, 8);
+                unit_create(26, 72, U_GRUNT, P_BLACK, 5);
+
+                *(byte *)(GB_HORSES + 14) += 1; // таймер 1 раз
+
+                // если есть лесопилка создаю крестьян
+                find_all_alive_units(U_HLUMBER);
+                sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+                if (units != 0)
+                {
+                    unit_create(30, 2, U_ATTACK_PEASANT, P_ORANGE, 3);
+                }
+
+                *(byte *)(GB_HORSES + 15) = 0; // обнуляем таймер
+            }
+
+            if (*(byte *)(GB_HORSES + 14) == 3)
             {
                 unit_create(19, 8, U_KNIGHT, P_BLUE, 12);
                 unit_create(63, 88, U_KNIGHT, P_BLUE, 12);
             }
         }
+
+        // крестьяне бегут с лесопилки в город к бараку
+        find_all_alive_units(U_ATTACK_PEASANT);
+        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+        order_all(86, 2, ORDER_MOVE);
+
+        // нападение пиратов
+        find_all_alive_units(U_GRUNT);
+        set_region(20, 43, 32, 50);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(30, 4, ORDER_PATROL);
+
+        find_all_alive_units(U_GRUNT);
+        set_region(21, 0, 40, 10);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(88, 7, ORDER_PATROL);
+
+        find_all_alive_units(U_GRUNT);
+        set_region(19, 56, 33, 62);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(88, 7, ORDER_PATROL);
+
+        find_all_alive_units(U_GRUNT);
+        set_region(17, 66, 33, 77);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(75, 75, ORDER_PATROL);
+
+        find_all_alive_units(U_GRUNT);
+        set_region(56, 69, 87, 84);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(88, 7, ORDER_PATROL);
+
+        find_all_alive_units(U_GRUNT);
+        set_region(19, 56, 33, 62);
+        sort_in_region();
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(88, 7, ORDER_PATROL);
 
         // Конница сначала бежит в замок барона, а потом атачит форт пиратов
         find_all_alive_units(U_KNIGHT);
