@@ -6484,6 +6484,18 @@ int netstat_get_tbl_nation(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_0041C51C)(tbl, str_id); // original
 }
 
+void *pcx_act1;
+void *pcx_act1_pal;
+void *pcx_act2;
+void *pcx_act2_pal;
+void *pcx_act3;
+void *pcx_act3_pal;
+void *pcx_act4;
+void *pcx_act4_pal;
+void *pcx_act5;
+void *pcx_act5_pal;
+void *tbl_act;
+
 void files_init()
 {
     file_load_size("maps\\dr01.pud", &pud_map1, &pud_map1_size);
@@ -6549,6 +6561,112 @@ void files_init()
 
     // нации при победе или поражении
     tbl_nations = file_load("textes\\nations.tbl");
+
+    // Текст в Актах (пока хз разбираюсь)
+    tbl_act = file_load("textes\\act.tbl");
+
+    // Картики Актов
+    pcx_act1 = file_load("images\\act1.raw");
+    pcx_act1_pal = file_load("images\\act1.pal");
+    pcx_act2 = file_load("images\\act2.raw");
+    pcx_act2_pal = file_load("images\\act2.pal");
+    pcx_act3 = file_load("images\\act3.raw");
+    pcx_act3_pal = file_load("images\\act3.pal");
+    pcx_act4 = file_load("images\\act4.raw");
+    pcx_act4_pal = file_load("images\\act4.pal");
+    pcx_act5 = file_load("images\\act5.raw");
+    pcx_act5_pal = file_load("images\\act5.pal");
+}
+
+PROC g_proc_0042968A;
+void act_get_tbl_small(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if (lvl == LVL_HUMAN1)
+    {
+        new_tbl = tbl_act;
+        str_id = 1;
+    }
+    if ((lvl == LVL_HUMAN2) || (lvl == LVL_HUMAN3))
+    {
+        new_tbl = tbl_act;
+        str_id = 3;
+    }
+    if ((lvl == LVL_HUMAN4) || (lvl == LVL_HUMAN5) || (lvl == LVL_HUMAN6) || (lvl == LVL_HUMAN7) || (lvl == LVL_HUMAN8))
+    {
+        new_tbl = tbl_act;
+        str_id = 5;
+    }
+    if ((lvl == LVL_HUMAN9) || (lvl == LVL_HUMAN10) || (lvl == LVL_HUMAN11))
+    {
+        new_tbl = tbl_act;
+        str_id = 7;
+    }
+    if ((lvl == LVL_HUMAN12) || (lvl == LVL_HUMAN13) || (lvl == LVL_HUMAN14))
+    {
+        new_tbl = tbl_act;
+        str_id = 9;
+    }
+    //-------------------------------------------------
+
+    if (new_tbl)
+        return ((void (*)(void *, int))g_proc_0042968A)(new_tbl, str_id);
+    else
+        return ((void (*)(void *, int))g_proc_0042968A)(tbl, str_id); // original
+}
+
+PROC g_proc_004296A9;
+void act_get_tbl_big(void *tbl, WORD str_id)
+{
+    void *new_tbl = NULL;
+    byte lvl = *(byte *)LEVEL_OBJ;
+    //-------------------------------------------------
+    if (lvl == LVL_HUMAN1)
+    {
+        new_tbl = tbl_act;
+        str_id = 2;
+    }
+    if ((lvl == LVL_HUMAN2) || (lvl == LVL_HUMAN3))
+    {
+        new_tbl = tbl_act;
+        str_id = 4;
+    }
+    if ((lvl == LVL_HUMAN4) || (lvl == LVL_HUMAN5) || (lvl == LVL_HUMAN6) || (lvl == LVL_HUMAN7) || (lvl == LVL_HUMAN8))
+    {
+        new_tbl = tbl_act;
+        str_id = 6;
+    }
+    if ((lvl == LVL_HUMAN9) || (lvl == LVL_HUMAN10) || (lvl == LVL_HUMAN11))
+    {
+        new_tbl = tbl_act;
+        str_id = 8;
+    }
+    if ((lvl == LVL_HUMAN12) || (lvl == LVL_HUMAN13) || (lvl == LVL_HUMAN14))
+    {
+        new_tbl = tbl_act;
+        str_id = 10;
+    }
+    //-------------------------------------------------
+
+    if (new_tbl)
+        return ((void (*)(void *, int))g_proc_004296A9)(new_tbl, str_id);
+    else
+        return ((void (*)(void *, int))g_proc_004296A9)(tbl, str_id); // original
+}
+
+PROC g_proc_0042A443;
+void act_init()
+{
+    WORD m = *(WORD *)LEVEL_ID;
+    if (*(byte *)LEVEL_OBJ == LVL_HUMAN1)
+        *(WORD *)LEVEL_ID = 0x52D0;
+    else
+        *(WORD *)LEVEL_ID = 0x52C8;  // mission file number
+    *(WORD *)PREVIOUS_ACT = 0;       // prev act
+    ((void (*)())g_proc_0042A443)(); // original
+    *(WORD *)LEVEL_ID = m;           // mission file number restore
 }
 
 PROC g_proc_004354FA;
@@ -6583,6 +6701,58 @@ int objct_get_tbl_campanign(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_004354FA)(new_tbl, str_id);
     else
         return ((int (*)(void *, int))g_proc_004354FA)(tbl, str_id); // original
+}
+
+void pal_load(byte *palette_adr, void *pal)
+{
+    if (palette_adr != NULL)
+    {
+        if (pal != NULL)
+        {
+            DWORD i = 0;
+            while (i < (256 * 4))
+            {
+                *(byte *)(palette_adr + i) = *(byte *)((DWORD)pal + i);
+                i++;
+            }
+        }
+    }
+}
+
+PROC g_proc_00429625; // load palette
+PROC g_proc_00429654; // load image
+void pcx_load_act(char *name, void *pcx_info, byte *palette_adr)
+{
+    ((void (*)(char *, void *, byte *))g_proc_00429625)(name, pcx_info, palette_adr); // original
+    byte lvl = *(byte *)LEVEL_OBJ;
+    void *new_pcx_pixels = NULL;
+    if (lvl == LVL_HUMAN1)
+    {
+        new_pcx_pixels = pcx_act1;
+        pal_load(palette_adr, pcx_act1_pal);
+    }
+    if ((lvl == LVL_HUMAN2) || (lvl == LVL_HUMAN3))
+    {
+        new_pcx_pixels = pcx_act2;
+        pal_load(palette_adr, pcx_act2_pal);
+    }
+    if ((lvl == LVL_HUMAN4) || (lvl == LVL_HUMAN5) || (lvl == LVL_HUMAN6) || (lvl == LVL_HUMAN7) || (lvl == LVL_HUMAN8))
+    {
+        new_pcx_pixels = pcx_act3;
+        pal_load(palette_adr, pcx_act3_pal);
+    }
+    if ((lvl == LVL_HUMAN9) || (lvl == LVL_HUMAN10) || (lvl == LVL_HUMAN11))
+    {
+        new_pcx_pixels = pcx_act4;
+        pal_load(palette_adr, pcx_act4_pal);
+    }
+    if ((lvl == LVL_HUMAN12) || (lvl == LVL_HUMAN13) || (lvl == LVL_HUMAN14))
+    {
+        new_pcx_pixels = pcx_act5;
+        pal_load(palette_adr, pcx_act5_pal);
+    }
+    if (new_pcx_pixels)
+        patch_setdword((DWORD *)((DWORD)pcx_info + 4), (DWORD)new_pcx_pixels);
 }
 
 PROC g_proc_004300A5;
@@ -8640,6 +8810,12 @@ void common_hooks()
 
     hook(0x0042A4A1, &g_proc_0042A4A1, (char *)new_game);
     hook(0x0041F7E4, &g_proc_0041F7E4, (char *)load_game);
+    // Act image
+    hook(0x00429625, &g_proc_00429625, (char *)pcx_load_act);
+    hook(0x00429654, &g_proc_00429654, (char *)pcx_load_act);
+    // Act text
+    hook(0x0042968A, &g_proc_0042968A, (char *)act_get_tbl_small);
+    hook(0x004296A9, &g_proc_004296A9, (char *)act_get_tbl_big);
 }
 
 void capture_fix()
