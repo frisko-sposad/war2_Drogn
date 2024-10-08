@@ -6141,6 +6141,11 @@ int status_get_tbl(void *tbl, WORD str_id)
                 new_tbl = tbl_name1;
                 str_id = 1;
             }
+            else if (id == U_TYRALYON)
+            {
+                new_tbl = tbl_name1;
+                str_id = 1;
+            }
             else if (id == U_UTER)
             {
                 new_tbl = tbl_name2;
@@ -7023,6 +7028,7 @@ void sound_play_unit_speech(WORD sid, int a, int *u, int b)
                 sound_play_unit_speech_replace(sid, a, u, b, hugh_sounds[sn], hugh_names[sn]);
                 f = false;
             }
+
             // добавить ещё тириона со звуком даната
         }
     }
@@ -7876,7 +7882,165 @@ void v_human4(bool rep_init)
     }
     else
     {
-        // your custom victory conditions
+        // Враги
+        ally(P_VIOLET, P_ORANGE, 0);
+        ally(P_BLACK, P_ORANGE, 0);
+
+        // Союзники
+        ally(P_WHITE, P_ORANGE, 1);
+        ally(P_WHITE, P_BLUE, 1);
+
+        // обзор
+        comps_vision(true); // компы могут давать виз
+        viz(P_WHITE, P_BLUE, 1);
+        viz(P_WHITE, P_ORANGE, 1);
+
+        // Только Герой и Паладины могуд наносить урон Демону
+        ua[0] = U_TYRALYON;
+        ut[0] = U_TROLL;
+        ua[1] = U_PALADIN;
+        ut[1] = U_TROLL;
+
+        // Ритуал у Камня
+        set_region(77, 32, 77, 32);
+        find_all_alive_units(U_TYRALYON);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 0) = *(byte *)(GB_HORSES + 0) + units;
+        find_all_alive_units(U_PALADIN);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 0) = *(byte *)(GB_HORSES + 0) + units;
+
+        set_region(77, 26, 77, 26);
+        find_all_alive_units(U_TYRALYON);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 1) = *(byte *)(GB_HORSES + 1) + units;
+        find_all_alive_units(U_PALADIN);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 1) = *(byte *)(GB_HORSES + 1) + units;
+
+        set_region(79, 29, 79, 29);
+        find_all_alive_units(U_TYRALYON);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 2) = *(byte *)(GB_HORSES + 2) + units;
+        find_all_alive_units(U_PALADIN);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 2) = *(byte *)(GB_HORSES + 2) + units;
+
+        set_region(73, 27, 73, 27);
+        find_all_alive_units(U_TYRALYON);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 3) = *(byte *)(GB_HORSES + 3) + units;
+        find_all_alive_units(U_PALADIN);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 3) = *(byte *)(GB_HORSES + 3) + units;
+
+        set_region(73, 31, 73, 31);
+        find_all_alive_units(U_TYRALYON);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 4) = *(byte *)(GB_HORSES + 4) + units;
+        find_all_alive_units(U_PALADIN);
+        sort_in_region();
+        *(byte *)(GB_HORSES + 4) = *(byte *)(GB_HORSES + 4) + units;
+
+        if (*(byte *)(GB_HORSES + 0) + *(byte *)(GB_HORSES + 1) + *(byte *)(GB_HORSES + 2) + *(byte *)(GB_HORSES + 3) + *(byte *)(GB_HORSES + 4) == 5)
+        {
+            char message[] = "RITUAL WORKING!!!";
+            show_message(10, message);
+        }
+
+        // приплытие паладинов
+        if (*(byte *)(GB_HORSES + 5) < 2) // таймер
+            *(byte *)(GB_HORSES + 5) = *(byte *)(GB_HORSES + 5) + 1;
+        else
+        {
+            // Плывёт корабль
+            find_all_alive_units(U_HTRANSPORT);
+            order_all(21, 62, ORDER_MOVE);
+        }
+
+        // Создаём паладинов
+        set_region(15, 56, 21, 62);
+        find_all_alive_units(U_HTRANSPORT);
+        sort_in_region();
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 6) == 0)
+            {
+                unit_create(20, 58, U_PALADIN, P_BLUE, 4);
+                char message[] = "PALADIN: We need to perform a ritual at the Runestone! To study Exorcism!";
+                show_message(10, message);
+                viz_area_add(76, 29, 1 << P_WHITE, 2);
+                *(byte *)(GB_HORSES + 6) = 1;
+                find_all_alive_units(U_PALADIN);
+                give_all(P_WHITE);
+            }
+        }
+
+        // Пока жив Демон создавать скелетов и слать в атаку
+        find_all_alive_units(U_TROLL);
+        if (units > 0)
+        {
+            if (*(byte *)(GB_HORSES + 7) < 10) // таймер на 20
+                *(byte *)(GB_HORSES + 7) = *(byte *)(GB_HORSES + 7) + 1;
+            else
+            {
+
+                unit_create(60, 35, U_SKELETON, P_BLACK, 6);
+                unit_create(49, 45, U_SKELETON, P_BLACK, 5);
+                unit_create(49, 45, U_DK, P_BLACK, 1);
+                unit_create(93, 76, U_FOOTMAN, P_ORANGE, 8);
+
+                // Отправляем черного в бой с помощью убийства последнего здания
+                unit_create(94, 1, U_FARM, P_BLACK, 1);
+                find_all_alive_units(U_FARM);
+                sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                kill_all();
+
+                *(byte *)(GB_HORSES + 7) = 0; // таймер 1 раз
+            }
+        }
+
+        // нежить атакует барона
+        find_all_alive_units(U_FOOTMAN);
+        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+        order_all(80, 90, ORDER_PATROL);
+
+        // Футы Барона атакуют
+        find_all_alive_units(U_FOOTMAN);
+        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+        order_all(40, 34, ORDER_PATROL);
+
+        // условие поражения
+        find_all_alive_units(U_TYRALYON);
+        if (units == 0)
+        {
+            if (*(byte *)(GB_HORSES + 13) < 2)
+                *(byte *)(GB_HORSES + 13) = *(byte *)(GB_HORSES + 13) + 1;
+            else
+                lose(true);
+        }
+
+        find_all_alive_units(U_PALADIN);
+        if (units > 0 && units < 4)
+        {
+            // задержка перед поражением, чтоб успеть загрузиться
+            if (*(byte *)(GB_HORSES + 14) < 2)
+                *(byte *)(GB_HORSES + 14) = *(byte *)(GB_HORSES + 14) + 1;
+            else
+                lose(true);
+        }
+
+        // условие победы
+        find_all_alive_units(U_TROLL);
+
+        if (units == 0)
+        {
+            // задержка перед победой
+            if (*(byte *)(GB_HORSES + 15) < 1)
+                *(byte *)(GB_HORSES + 15) = *(byte *)(GB_HORSES + 15) + 1;
+            else
+                win(true);
+        }
     }
 }
 
