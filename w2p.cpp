@@ -6500,6 +6500,8 @@ void *pcx_act4_pal;
 void *pcx_act5;
 void *pcx_act5_pal;
 void *tbl_act;
+void *pcx_menu;
+void *pcx_menu_pal;
 
 void files_init()
 {
@@ -6581,6 +6583,43 @@ void files_init()
     pcx_act4_pal = file_load("images\\act4.pal");
     pcx_act5 = file_load("images\\act5.raw");
     pcx_act5_pal = file_load("images\\act5.pal");
+
+    // главное меню
+    pcx_menu = file_load("images\\menu.raw");
+    pcx_menu_pal = file_load("images\\menu.pal");
+}
+
+int cred_num = 0;
+void pal_load(byte *palette_adr, void *pal)
+{
+    if (palette_adr != NULL)
+    {
+        if (pal != NULL)
+        {
+            DWORD i = 0;
+            while (i < (256 * 4))
+            {
+                *(byte *)(palette_adr + i) = *(byte *)((DWORD)pal + i);
+                i++;
+            }
+        }
+    }
+}
+
+PROC g_proc_004372EE;
+void pcx_load_menu(char *name, void *pcx_info, byte *palette_adr)
+{
+    ((void (*)(char *, void *, byte *))g_proc_004372EE)(name, pcx_info, palette_adr); // original
+    void *new_pcx_pixels = NULL;
+    if (CompareString(LOCALE_SYSTEM_DEFAULT, NORM_IGNORECASE, name, -1, "art\\titlemenu_bne.pcx", -1) == CSTR_EQUAL)
+    {
+        cred_num = 0;
+        new_pcx_pixels = pcx_menu;
+        pal_load(palette_adr, pcx_menu_pal);
+    }
+
+    if (new_pcx_pixels)
+        patch_setdword((DWORD *)((DWORD)pcx_info + 4), (DWORD)new_pcx_pixels);
 }
 
 PROC g_proc_0042968A;
@@ -6706,22 +6745,6 @@ int objct_get_tbl_campanign(void *tbl, WORD str_id)
         return ((int (*)(void *, int))g_proc_004354FA)(new_tbl, str_id);
     else
         return ((int (*)(void *, int))g_proc_004354FA)(tbl, str_id); // original
-}
-
-void pal_load(byte *palette_adr, void *pal)
-{
-    if (palette_adr != NULL)
-    {
-        if (pal != NULL)
-        {
-            DWORD i = 0;
-            while (i < (256 * 4))
-            {
-                *(byte *)(palette_adr + i) = *(byte *)((DWORD)pal + i);
-                i++;
-            }
-        }
-    }
 }
 
 PROC g_proc_00429625; // load palette
@@ -7942,10 +7965,25 @@ void v_human4(bool rep_init)
         sort_in_region();
         *(byte *)(GB_HORSES + 4) = *(byte *)(GB_HORSES + 4) + units;
 
-        if (*(byte *)(GB_HORSES + 0) + *(byte *)(GB_HORSES + 1) + *(byte *)(GB_HORSES + 2) + *(byte *)(GB_HORSES + 3) + *(byte *)(GB_HORSES + 4) == 5)
+        allow_table(P_WHITE, 3, L_EXORCISM, 1);
+
+        if (*(byte *)(GB_HORSES + 0) != 0)
         {
-            char message[] = "RITUAL WORKING!!!";
-            show_message(10, message);
+            if (*(byte *)(GB_HORSES + 1) != 0)
+            {
+                if (*(byte *)(GB_HORSES + 2) != 0)
+                {
+                    if (*(byte *)(GB_HORSES + 3) != 0)
+                    {
+                        if (*(byte *)(GB_HORSES + 4) != 0)
+                        {
+                            char message[] = "RITUAL WORKING! We studied exorcism!";
+                            show_message(10, message);
+                            allow_table(P_WHITE, 3, L_EXORCISM, 1);
+                        }
+                    }
+                }
+            }
         }
 
         // приплытие паладинов
@@ -7990,19 +8028,23 @@ void v_human4(bool rep_init)
                 unit_create(49, 45, U_DK, P_BLACK, 1);
                 unit_create(93, 76, U_FOOTMAN, P_ORANGE, 8);
 
-                // Отправляем черного в бой с помощью убийства последнего здания
-                unit_create(94, 1, U_FARM, P_BLACK, 1);
-                find_all_alive_units(U_FARM);
-                sort_stat(S_OWNER, P_BLACK, CMP_EQ);
-                kill_all();
+                // // Отправляем черного в бой с помощью убийства последнего здания
+                // unit_create(94, 1, U_FARM, P_BLACK, 1);
+                // find_all_alive_units(U_FARM);
+                // sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+                // kill_all();
 
                 *(byte *)(GB_HORSES + 7) = 0; // таймер 1 раз
             }
         }
 
         // нежить атакует барона
-        find_all_alive_units(U_FOOTMAN);
-        sort_stat(S_OWNER, P_ORANGE, CMP_EQ);
+        find_all_alive_units(U_DK);
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
+        order_all(80, 90, ORDER_PATROL);
+
+        find_all_alive_units(U_SKELETON);
+        sort_stat(S_OWNER, P_BLACK, CMP_EQ);
         order_all(80, 90, ORDER_PATROL);
 
         // Футы Барона атакуют
@@ -8031,7 +8073,7 @@ void v_human4(bool rep_init)
         }
 
         // условие победы
-        find_all_alive_units(U_TROLL);
+        find_all_alive_units(U_ALTAR);
 
         if (units == 0)
         {
@@ -8784,7 +8826,7 @@ void replace_back()
     manacost(VISION, 70);
     manacost(HEAL, 6);
     manacost(GREATER_HEAL, 5);
-    manacost(EXORCISM, 4);
+    manacost(EXORCISM, 1);
     manacost(FIREBALL, 100);
     manacost(FLAME_SHIELD, 80);
     manacost(SLOW, 50);
@@ -8980,6 +9022,8 @@ void common_hooks()
     // Act text
     hook(0x0042968A, &g_proc_0042968A, (char *)act_get_tbl_small);
     hook(0x004296A9, &g_proc_004296A9, (char *)act_get_tbl_big);
+    // menu
+    hook(0x004372EE, &g_proc_004372EE, (char *)pcx_load_menu);
 }
 
 void capture_fix()
